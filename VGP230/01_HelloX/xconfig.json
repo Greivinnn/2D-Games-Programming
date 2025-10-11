@@ -1,8 +1,8 @@
 {
-    "AppName": "Hello X",
-    "WinWidth": 1280,
-    "WinHeight": 720,
-    "FullScreen": false,
+    "AppName": "Hello X", // Name of the application
+    "WinWidth": 1280, // ...
+    "WinHeight": 720, // Width and Height of the window define the window's resolution when my game starts
+    "FullScreen": false,    // wether the game launches in fullscreen or windowed mode
     "TexturePath": "../../Assets/Images",
-    "SoundPath": "../../Assets/Sounds"
+    "SoundPath": "../../Assets/Sounds"`// tells the XEngine where to look for files when we use X::LoadTexture();
 }
