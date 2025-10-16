@@ -2,7 +2,7 @@
     "AppName": "Hello X",
     "WinWidth": 1280,
     "WinHeight": 720,
-    "FullScreen": true,
+    "FullScreen": false,
     "TexturePath": "../../Assets/Images",
     "SoundPath": "../../Assets/Sounds"
 }

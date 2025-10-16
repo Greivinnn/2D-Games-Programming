@@ -25,6 +25,12 @@ struct Vector2
 	static Vector2 XAxis()						{ return Vector2(1.0f, 0.0f); }
 	static Vector2 YAxis()						{ return Vector2(0.0f, 1.0f); }
 
+	// helper functions
+	static float SqrMagnitude(const Vector2& v) { return v.x * v.x + v.y * v.y; }
+	static float Magnitude(const Vector2& v) { return sqrt(SqrMagnitude(v)); }
+	static Vector2 Forward(const Vector2& v) { return v / Magnitude(v); }
+	static Vector2 Forward(float rot) { return { sin(rot), -cos(rot) }; }
+
 	Vector2 operator-() const					{ return Vector2(-x, -y); }
 	Vector2 operator+(const Vector2& rhs) const { return Vector2(x + rhs.x, y + rhs.y); }
 	Vector2 operator-(const Vector2& rhs) const { return Vector2(x - rhs.x, y - rhs.y); }
