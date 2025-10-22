@@ -137,8 +137,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Collidable.cpp" />
+    <ClCompile Include="EndState.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Pool.cpp" />
+    <ClCompile Include="RunGameState.cpp" />
     <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="StartState.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,9 +151,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Collidable.h" />
+    <ClInclude Include="EndState.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Enum.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="Pool.h" />
+    <ClInclude Include="RunGameState.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="StartState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
