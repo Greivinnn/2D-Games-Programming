@@ -24,6 +24,11 @@ void Game::Load()
 	mPlayer->BulletPool(mBulletPool);
 	AddCollidable(mPlayer);
 
+	mEnemy = new Enemy();
+	mEnemy->Load();
+	mEnemy->SetBulletPool(mBulletPool);
+	mEnemy->
+
 	mBulletPool->Load();
 	std::vector<Bullet*>& bullets = mBulletPool->GetBullets();
 	for (Bullet* bullet : bullets)
