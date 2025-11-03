@@ -42,7 +42,7 @@ bool Collidable::DidCollide(const Collidable* collidable) const
 		return false;
 	}
 
-	if (collidableFilter < 0 || collisionFilter < 0 || (collidableFilter & collisionFilter) > 0)
+	if (collidableFilter < 0 || collisionFilter < 0 || (collidableFilter & GetType()) > 0)
 	{
 		float distSq = X::Math::Vector2::SqrMagnitude(collidable->GetPosition() - GetPosition());
 		float radiusSq = X::Math::Sqr(collidable->GetRadius() + GetRadius());

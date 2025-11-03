@@ -26,7 +26,7 @@ void GameRender()
 
 bool GameLoop(float deltaTime)
 {
-	State newState = gCurrentState->Update(deltaTime);
+	State newState = gGameStates[gActiveState]->Update(deltaTime);
 	gCurrentState->Render();
 	if (newState != gActiveState)
 	{

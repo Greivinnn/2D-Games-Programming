@@ -57,6 +57,18 @@ void Bullet::SetActive(const X::Math::Vector2& pos, float rotation, float lifeTi
 void Bullet::SetEntityType(EntityType type)
 {
 	mBulletType = type;
+	if (type == ET_BULLET_PLAYER)
+	{
+		SetCollisionFilter(ET_ENEMY);
+	}
+	else if (type == ET_BULLET_ENEMY)
+	{
+		SetCollisionFilter(ET_SHIP);
+	}
+	else
+	{
+		SetCollisionFilter(0);
+	}
 }
 
 bool Bullet::IsActive() const
@@ -66,12 +78,12 @@ bool Bullet::IsActive() const
 
 int Bullet::GetType() const
 {
-	return 0;
+	return mBulletType;	
 }
 
 const X::Math::Vector2& Bullet::GetPosition() const
 {
-	return 0;
+	return mPosition;
 }
 
 void Bullet::OnCollision(Collidable* collidable)

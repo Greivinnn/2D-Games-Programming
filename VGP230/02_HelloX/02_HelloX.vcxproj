@@ -136,12 +136,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimSpriteSheet.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="EndState.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Pool.cpp" />
+    <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="RunGameState.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="StartState.cpp" />
@@ -151,6 +153,7 @@
     <None Include="xconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimSpriteSheet.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Collidable.h" />
     <ClInclude Include="EndState.h" />
@@ -160,6 +163,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Pool.h" />
+    <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="RunGameState.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="StartState.h" />

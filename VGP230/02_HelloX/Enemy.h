@@ -4,6 +4,7 @@
 
 class Pool;
 class Ship;
+class AnimSpriteSheet;
 
 class Enemy : public Entity, public Collidable
 {
@@ -28,11 +29,21 @@ public:
 	void SetPosition(const X::Math::Vector2& position);
 	void SetRotation(float rotation);
 
+	bool IsAlive() const;
+
 private:
 	Pool* mBulletPool;
 	Ship* mShip;
+	AnimSpriteSheet* mExplosion;
 
 	X::TextureId mImageId;
 	X::Math::Vector2 mPosition;
 	float mRotation;
+
+	int mHealth;
+
+	X::Math::Vector2 mCenterPoint;
+	X::Math::Vector2 mTargetPosition;
+	float mTargetPositionUpdate;
+	float mFireRate;
 };

@@ -4,6 +4,7 @@
 
 RunGameState::RunGameState()
 	:GameState(State::RunGame)
+	, mGame(nullptr)
 {
 }
 
@@ -24,9 +25,12 @@ State RunGameState::Update(float deltaTime)
 		return State::Start;
 	}
 
-	mGame->Update(deltaTime);
+	if (mGame)
+	{
+		mGame->Update(deltaTime);
+	}
 
-	if (mGame->IsGameOver())
+	if (mGame && mGame->IsGameOver())
 	{
 		return State::End;
 	}
@@ -36,14 +40,24 @@ State RunGameState::Update(float deltaTime)
 
 void RunGameState::Render()
 {
-	const float textSize = 100.0f;
-	const char* text = "<\n\nRUNGAME STATE REACH>";
-	float textWidth = X::GetTextWidth(text, textSize);
-	float screenX = (X::GetScreenWidth() - textWidth) * 0.5f;
-	float screenY = (X::GetScreenHeight() - textWidth) * 0.5f;
-	X::DrawScreenText(text, screenX, screenY, textSize, X::Colors::Green);
+	if(mGame)
+	{
+		mGame->Render();
+	}
+	//const float textSize = 100.0f;
+	//const char* text = "<\n\nRUNGAME STATE REACH>";
+	//float textWidth = X::GetTextWidth(text, textSize);
+	//float screenX = (X::GetScreenWidth() - textWidth) * 0.5f;
+	//float screenY = (X::GetScreenHeight() - textWidth) * 0.5f;
+	/*X::DrawScreenText(text, screenX, screenY, textSize, X::Colors::Green);*/
 }
 
 void RunGameState::Unload()
 {
+	if (mGame)
+	{
+		mGame->Unload();
+		delete mGame;
+		mGame = nullptr;
+	}
 }
