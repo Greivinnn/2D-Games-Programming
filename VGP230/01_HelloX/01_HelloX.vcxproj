@@ -132,15 +132,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\X\X.vcxproj">
-      <Project>{6682bfd4-c79f-49bd-a114-6ee8fb79e8c3}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="xconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\X\X.vcxproj">
+      <Project>{6682bfd4-c79f-49bd-a114-6ee8fb79e8c3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
