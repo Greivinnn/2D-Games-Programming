@@ -21,6 +21,7 @@ public:
 	void OnCollision(Collidable* collidable) override;
 	void SetBulletPool(Pool* bulletPool);
 
+	void SetHealth(int health);
 	int GetHealth() const;
 	int GetMaxHealth() const;
 	bool IsAlive() const;

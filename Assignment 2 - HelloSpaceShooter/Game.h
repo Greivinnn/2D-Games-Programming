@@ -9,6 +9,7 @@ class Collidable;
 class Enemy;
 class ProgressBar;
 class DiverEnemy;	
+class HealthPowerUp;
 
 class Game : public Entity
 {
@@ -29,6 +30,7 @@ public:
 	void SpawnWave();
 	bool AllEnemiesDead() const;
 	void SpawnDiverEnemy();
+	void SpawnHealthPowerUp(const X::Math::Vector2& position);
 private:
 	Ship* mPlayer;
 	Pool* mBulletPool;
@@ -48,4 +50,7 @@ private:
 	std::vector<DiverEnemy*> mDiverEnemies;
 	float mNextDiverSpawnTime;
 	int mDiverSpawnCount;
+	int mMaxDiverEnemiesSpawn;
+	// health powerup variables
+	std::vector<HealthPowerUp*> mHealthPowerUps;
 };

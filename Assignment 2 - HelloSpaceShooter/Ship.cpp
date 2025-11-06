@@ -94,6 +94,11 @@ void Ship::OnCollision(Collidable* collidable)
 {
 	if(IsAlive())
 	{
+		if(collidable->GetType() == ET_POWERUP_HEALTH)
+		{
+			return; // No damage taken from health power-up
+		}
+
 		int damage = 0;
 		if (collidable->GetType() == ET_ENEMY)
 		{
@@ -122,6 +127,11 @@ void Ship::SetBulletPool(Pool* bulletPool)
 const X::Math::Vector2& Ship::GetPosition() const
 {
 	return mPosition;
+}
+
+void Ship::SetHealth(int health)
+{
+	mHealth = health;
 }
 
 int Ship::GetHealth() const

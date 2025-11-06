@@ -33,6 +33,8 @@ public:
 
 	// assignment addition functions	
 	void SetMovementSeed(float seed);
+	bool JustDied() const;
+	void ClearDeathFlag();
 
 private:
 	Pool* mBulletPool;
@@ -55,4 +57,5 @@ private:
 	float mMovementSeed;
 	X::Math::Vector2 mHomeOffset;
 	float mHoverRadius;
+	bool mJustDied;
 };

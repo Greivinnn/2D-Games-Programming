@@ -32,7 +32,7 @@ void HealthPowerUp::Update(float deltaTime)
 		return;
 	}
 
-	const float fallSpeed = 50.0f;
+	const float fallSpeed = 150.0f;
 	mPosition.y += fallSpeed * deltaTime;
 
 	const float screenH = (float)X::GetScreenHeight();
@@ -67,14 +67,25 @@ const X::Math::Vector2& HealthPowerUp::GetPosition() const
 	return mPosition;
 }
 
-//void HealthPowerUp::OnCollision(Collidable* collidable)
-//{
-//	if (IsActive() && collidable->GetType() == ET_SHIP)
-//	{
-//		Ship* ship = 
-//			// do this
-//	}
-//}
+void HealthPowerUp::OnCollision(Collidable* collidable)
+{
+	if (IsActive())
+	{
+		if (collidable->GetType() == ET_SHIP)
+		{
+			Ship* ship = static_cast<Ship*>(collidable);
+			int currentHealth = ship->GetHealth();
+			int maxHealth = ship->GetMaxHealth();
+			currentHealth += static_cast<int>(mHealthBoost);
+			if (currentHealth > maxHealth)
+			{
+				currentHealth = maxHealth;
+			}
+			ship->SetHealth(currentHealth);
+			SetActive(false);
+		}
+	}
+}
 
 void HealthPowerUp::SetHealthBoost(float healthBoost)
 {
@@ -94,4 +105,9 @@ void HealthPowerUp::SetActive(bool active)
 bool HealthPowerUp::IsActive() const
 {
 	return mActive;
+}
+
+void HealthPowerUp::SetPosition(const X::Math::Vector2& position)
+{
+	mPosition = position;
 }

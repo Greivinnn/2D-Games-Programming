@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "ProgressBar.h"
 #include "DiverEnemy.h"	
+#include "HealthPowerUp.h"
 
 //static int minSpawnAmount = 5;
 //static int maxSpawnAmount = 10;
@@ -31,6 +32,8 @@ Game::Game()
 	, mDiverEnemies(NULL)
 	, mNextDiverSpawnTime(5.0f)
 	, mDiverSpawnCount(1)
+	, mHealthPowerUps(NULL)
+	, mMaxDiverEnemiesSpawn(6)
 {
 }
 
@@ -85,7 +88,16 @@ void Game::Load()
 		AddCollidable(bullet);
 	}
 
-
+	// create pool of health powerups
+	const int maxPowerUps = 10;
+	for(int i = 0; i < maxPowerUps; ++i)
+	{
+		HealthPowerUp* powerUp = new HealthPowerUp();
+		powerUp->Load();
+		powerUp->SetActive(false);
+		AddCollidable(powerUp);
+		mHealthPowerUps.push_back(powerUp);
+	}
 }
 
 void Game::Update(float deltaTime)
@@ -108,6 +120,11 @@ void Game::Update(float deltaTime)
 
 		mNextDiverSpawnTime += 10.0f;
 		mDiverSpawnCount++;
+
+		if(mDiverSpawnCount > mMaxDiverEnemiesSpawn)
+		{
+			mDiverSpawnCount = 2;
+		}
 	}
 
 	//if (!mBossSpawned && mSurvivalTimer >= mSurviveTimeGoal)
@@ -152,12 +169,30 @@ void Game::Update(float deltaTime)
 		enemy->Update(deltaTime);
 	}
 
+	for(Enemy* enemy : mEnemies)
+	{
+		if(enemy->JustDied())
+		{
+			int randomChance = rand() % 100;
+			if (randomChance < 90) // 30% chance to spawn health powerup
+			{
+				SpawnHealthPowerUp(enemy->GetPosition());
+			}
+			enemy->ClearDeathFlag();
+		}
+	}
+
 	for (DiverEnemy* diver : mDiverEnemies)
 	{
 		diver->Update(deltaTime);
 	}
 
 	mBulletPool->Update(deltaTime);
+
+	for(HealthPowerUp* powerUp : mHealthPowerUps)
+	{
+		powerUp->Update(deltaTime);
+	}
 
 	int numCollidables = mCollidables.size();
 	for (int i = 0; i < numCollidables; ++i)
@@ -186,6 +221,10 @@ void Game::Render()
 	for(DiverEnemy* diver : mDiverEnemies)
 	{
 		diver->Render();
+	}
+	for(HealthPowerUp* powerUp : mHealthPowerUps)
+	{
+		powerUp->Render();
 	}
 	mBulletPool->Render();
 	mHealthBar->Render();
@@ -220,6 +259,14 @@ void Game::Unload()
 		diver = nullptr;
 	}
 	mDiverEnemies.clear();
+
+	for(HealthPowerUp* powerUp : mHealthPowerUps)
+	{
+		powerUp->Unload();
+		delete powerUp;
+		powerUp = nullptr;
+	}
+	mHealthPowerUps.clear();
 }
 
 void Game::AddCollidable(Collidable* collidable)
@@ -293,6 +340,19 @@ void Game::SpawnDiverEnemy()
 	newDiverEnemy->SetRotation(X::Math::kPi * 0.5f);
 	AddCollidable(newDiverEnemy);
 	mDiverEnemies.push_back(newDiverEnemy);
+}
+
+void Game::SpawnHealthPowerUp(const X::Math::Vector2& position)
+{
+	for(HealthPowerUp* powerUp : mHealthPowerUps)
+	{
+		if(!powerUp->IsActive())
+		{
+			powerUp->SetPosition(position);
+			powerUp->SetActive(true);
+			return;
+		}
+	}
 }
 
 

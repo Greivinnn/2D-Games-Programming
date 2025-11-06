@@ -24,6 +24,7 @@ public:
 	float GetHealthBoost() const;
 	void SetActive(bool active);
 	bool IsActive() const;
+	void SetPosition(const X::Math::Vector2& position);
 
 private:
 	X::TextureId mImageId;

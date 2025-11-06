@@ -22,6 +22,7 @@ Enemy::Enemy()
 	, mMovementSeed(0)
 	, mHomeOffset(0.0f, 0.0f)
 	, mHoverRadius(0.0f)
+	, mJustDied(false)
 {}
 Enemy::~Enemy()
 {
@@ -145,6 +146,7 @@ void Enemy::OnCollision(Collidable* collidable)
 		{
 			mExplosion->SetActive(mPosition);
 			SetCollisionFilter(0);
+			mJustDied = true;
 		}
 	}
 }
@@ -187,4 +189,14 @@ bool Enemy::IsAlive() const
 void Enemy::SetMovementSeed(float seed)
 {
 	mMovementSeed = seed;
+}
+
+bool Enemy::JustDied() const
+{
+	return mJustDied;
+}
+
+void Enemy::ClearDeathFlag()
+{
+	mJustDied = false;
 }
