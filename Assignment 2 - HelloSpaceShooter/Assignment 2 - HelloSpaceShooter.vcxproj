@@ -140,6 +140,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Pool.cpp" />
+    <ClCompile Include="HealthPowerUp.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="RunGameState.cpp" />
     <ClCompile Include="Ship.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Pool.h" />
+    <ClInclude Include="HealthPowerUp.h" />
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="RunGameState.h" />
     <ClInclude Include="Ship.h" />
