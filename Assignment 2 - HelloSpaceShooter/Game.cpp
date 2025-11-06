@@ -4,6 +4,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "ProgressBar.h"
+#include "DiverEnemy.h"	
 
 //static int minSpawnAmount = 5;
 //static int maxSpawnAmount = 10;
@@ -18,12 +19,18 @@ Game::Game()
 	:Entity()
 	, mPlayer(nullptr)
 	, mBulletPool(nullptr)
+	, mCollidables(NULL)
+	, mEnemies(NULL)
+	, mDeathEnemies(NULL)
 	, mHealthBar(nullptr)
 	, mSurvivalTimer(0.0f)
 	, mSurviveTimeGoal(30.0f)
 	, mBossSpawned(false)
 	, mMinSpawnAmount(2)
 	, mMaxSpawnAmount(4)
+	, mDiverEnemies(NULL)
+	, mNextDiverSpawnTime(5.0f)
+	, mDiverSpawnCount(1)
 {
 }
 
@@ -92,6 +99,17 @@ void Game::Update(float deltaTime)
 		SpawnWave();
 	}
 
+	if(mSurvivalTimer >= mNextDiverSpawnTime)
+	{
+		for(int i = 0; i < mDiverSpawnCount; ++i)
+		{
+			SpawnDiverEnemy();
+		}
+
+		mNextDiverSpawnTime += 10.0f;
+		mDiverSpawnCount++;
+	}
+
 	//if (!mBossSpawned && mSurvivalTimer >= mSurviveTimeGoal)
 	//{
 	//	mBossSpawned = true;
@@ -134,6 +152,11 @@ void Game::Update(float deltaTime)
 		enemy->Update(deltaTime);
 	}
 
+	for (DiverEnemy* diver : mDiverEnemies)
+	{
+		diver->Update(deltaTime);
+	}
+
 	mBulletPool->Update(deltaTime);
 
 	int numCollidables = mCollidables.size();
@@ -160,6 +183,10 @@ void Game::Render()
 	{
 		enemy->Render();
 	}
+	for(DiverEnemy* diver : mDiverEnemies)
+	{
+		diver->Render();
+	}
 	mBulletPool->Render();
 	mHealthBar->Render();
 }
@@ -185,6 +212,14 @@ void Game::Unload()
 		enemy = nullptr;
 	}
 	mEnemies.clear();
+
+	for (auto diver : mDiverEnemies)
+	{
+		diver->Unload();
+		delete diver;
+		diver = nullptr;
+	}
+	mDiverEnemies.clear();
 }
 
 void Game::AddCollidable(Collidable* collidable)
@@ -241,5 +276,23 @@ bool Game::AllEnemiesDead() const
 	return true;
 }
 
+void Game::SpawnDiverEnemy()
+{
+	const float screenWidth = (float)X::GetScreenWidth();
+	const float spawnY = 50.0f; // top of screen
+	// Random X across the top of the screen
+	float x = X::RandomFloat(50.0f, screenWidth - 50.0f);
+	X::Math::Vector2 spawnPosition = { x, spawnY };
+
+	DiverEnemy* newDiverEnemy = new DiverEnemy();
+	newDiverEnemy->Load();
+	newDiverEnemy->SetBulletPool(mBulletPool);
+	newDiverEnemy->SetShip(mPlayer);
+	newDiverEnemy->SetPosition(spawnPosition);
+	// face downwards
+	newDiverEnemy->SetRotation(X::Math::kPi * 0.5f);
+	AddCollidable(newDiverEnemy);
+	mDiverEnemies.push_back(newDiverEnemy);
+}
 
 

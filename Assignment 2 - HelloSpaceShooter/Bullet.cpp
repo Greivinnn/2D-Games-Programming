@@ -59,11 +59,11 @@ void Bullet::SetEntityType(EntityType type)
 	mBulletType = type;
 	if (type == ET_BULLET_PLAYER)
 	{
-		SetCollisionFilter(ET_ENEMY | ET_BULLET_ENEMY);
+		SetCollisionFilter(ET_ENEMY);
 	}
 	else if (type == ET_BULLET_ENEMY)
 	{
-		SetCollisionFilter(ET_SHIP | ET_BULLET_PLAYER);
+		SetCollisionFilter(ET_SHIP);
 	}
 	else
 	{

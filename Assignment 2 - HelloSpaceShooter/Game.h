@@ -8,6 +8,7 @@ class Pool;
 class Collidable;
 class Enemy;
 class ProgressBar;
+class DiverEnemy;	
 
 class Game : public Entity
 {
@@ -27,6 +28,7 @@ public:
 	// assignemnt addition functions
 	void SpawnWave();
 	bool AllEnemiesDead() const;
+	void SpawnDiverEnemy();
 private:
 	Ship* mPlayer;
 	Pool* mBulletPool;
@@ -42,4 +44,8 @@ private:
 	bool mBossSpawned;
 	int mMinSpawnAmount;
 	int mMaxSpawnAmount;
+	// diverEnemy variables 
+	std::vector<DiverEnemy*> mDiverEnemies;
+	float mNextDiverSpawnTime;
+	int mDiverSpawnCount;
 };
