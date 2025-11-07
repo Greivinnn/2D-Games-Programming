@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimSpriteSheet.h" />
+    <ClInclude Include="BossFight.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Collidable.h" />
     <ClInclude Include="DiverEnemy.h" />

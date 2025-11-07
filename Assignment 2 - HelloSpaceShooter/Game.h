@@ -31,6 +31,7 @@ public:
 	bool AllEnemiesDead() const;
 	void SpawnDiverEnemy();
 	void SpawnHealthPowerUp(const X::Math::Vector2& position);
+	void BossFight();
 private:
 	Ship* mPlayer;
 	Pool* mBulletPool;

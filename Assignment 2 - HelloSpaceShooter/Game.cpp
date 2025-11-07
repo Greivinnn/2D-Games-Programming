@@ -25,7 +25,7 @@ Game::Game()
 	, mDeathEnemies(NULL)
 	, mHealthBar(nullptr)
 	, mSurvivalTimer(0.0f)
-	, mSurviveTimeGoal(30.0f)
+	, mSurviveTimeGoal(60.0f)
 	, mBossSpawned(false)
 	, mMinSpawnAmount(2)
 	, mMaxSpawnAmount(4)
@@ -127,13 +127,11 @@ void Game::Update(float deltaTime)
 		}
 	}
 
-	//if (!mBossSpawned && mSurvivalTimer >= mSurviveTimeGoal)
-	//{
-	//	mBossSpawned = true;
-
-	//	// TODO: spawn boss here
-	//	// for now spawn a BIG wave to feel like a boss
-	//}
+	if (!mBossSpawned && mSurvivalTimer >= mSurviveTimeGoal)
+	{
+		mBossSpawned = true;
+		
+	}
 
 	//// assignemnt addition: check if all enemies are dead
 	//if (enemy->AreAllEnemiesDead())
@@ -353,6 +351,11 @@ void Game::SpawnHealthPowerUp(const X::Math::Vector2& position)
 			return;
 		}
 	}
+}
+
+void Game::BossFight()
+{
+
 }
 
 
