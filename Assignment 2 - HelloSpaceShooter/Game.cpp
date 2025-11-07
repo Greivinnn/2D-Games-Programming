@@ -26,7 +26,7 @@ Game::Game()
 	, mDeathEnemies(NULL)
 	, mHealthBar(nullptr)
 	, mSurvivalTimer(0.0f)
-	, mSurviveTimeGoal(10.0f)
+	, mSurviveTimeGoal(60.0f)	// this is the counter for the boss to appear
 	, mBossSpawned(false)
 	, mMinSpawnAmount(2)
 	, mMaxSpawnAmount(4)
@@ -37,6 +37,7 @@ Game::Game()
 	, mMaxDiverEnemiesSpawn(6)
 	, mBossFight(nullptr)
 	, mBossDefeated(false)
+	, mBackgroundId(0)
 {
 }
 
@@ -47,6 +48,8 @@ Game::~Game()
 
 void Game::Load()
 {
+	mBackgroundId = X::LoadTexture("background.png");
+
 	mPlayer = new Ship();
 	mBulletPool = new Pool;
 	mHealthBar = new ProgressBar();
@@ -233,6 +236,9 @@ void Game::Update(float deltaTime)
 
 void Game::Render()
 {
+	X::Math::Vector2 backgroundPos = { X::GetScreenWidth() * 0.5f, X::GetScreenHeight() * 0.5f };
+	X::DrawSprite(mBackgroundId, backgroundPos);
+
 	mPlayer->Render();
 	for (Enemy* enemy : mEnemies)
 	{

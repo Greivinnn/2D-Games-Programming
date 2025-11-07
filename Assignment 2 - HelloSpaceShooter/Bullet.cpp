@@ -61,7 +61,7 @@ void Bullet::SetEntityType(EntityType type)
 	{
 		SetCollisionFilter(ET_ENEMY);
 	}
-	else if (type == ET_BULLET_ENEMY)
+	else if (type == ET_BULLET_ENEMY || type == ET_BULLET_BOSS)
 	{
 		SetCollisionFilter(ET_SHIP);
 	}

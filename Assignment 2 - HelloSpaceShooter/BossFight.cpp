@@ -18,6 +18,8 @@ BossFight::BossFight()
 	, mTargetPosition(0.0f, 0.0f)
 	, mTargetPositionUpdate(0.0f)
 	, mFireRate(0.0f)
+	, mShootSoundId(0)
+	, mDamageCoolDown(0.0f)
 {
 }
 
@@ -30,6 +32,10 @@ void BossFight::Load()
 {
 	mImageId = X::LoadTexture("fighter1.png");
 	XASSERT(mImageId > 0, "BossFight: image did not load");
+
+	mShootSoundId = X::LoadSound("laser-gun-shot-Boss.wav");
+	XASSERT(mShootSoundId > 0, "BossFight: sound did not load");
+
 	mPosition = X::Math::Vector2::Zero();
 	mRotation = 0.0f;
 	SetCollisionFilter(ET_BULLET_PLAYER | ET_SHIP);
@@ -37,12 +43,18 @@ void BossFight::Load()
 	mExplosion->Load();
 	mTargetPositionUpdate = 0.0f;
 	mFireRate = 3.0f;
+	mDamageCoolDown = 0.0f;
 }
 
 void BossFight::Update(float deltaTime)
 {
 	if (IsAlive())
 	{
+		if (mDamageCoolDown > 0.0f)
+		{
+			mDamageCoolDown -= deltaTime;
+		}
+
 		const float speed = 50.0f;
 
 		mTargetPositionUpdate -= deltaTime;
@@ -63,6 +75,12 @@ void BossFight::Update(float deltaTime)
 			mPosition += direction * speed * deltaTime;
 		}
 
+		if (mShip && mShip->IsAlive())
+		{
+			X::Math::Vector2 dir = X::Math::Normalize(mShip->GetPosition() - mPosition);
+			mRotation = atan2f(dir.x, -dir.y);
+		}
+
 		mFireRate -= deltaTime;
 		if(mFireRate <= 0.0f && mShip->IsAlive())
 		{
@@ -81,11 +99,12 @@ void BossFight::Update(float deltaTime)
 				{
 					X::Math::Vector2 spawnPos = mPosition + X::Math::Vector2::Forward(angle) * 50.0f;
 
-					bullet->SetEntityType(ET_BULLET_ENEMY);
+					bullet->SetEntityType(ET_BULLET_BOSS);
 					bullet->SetActive(spawnPos, angle, 3.0f);
 				}
 			}
 			mFireRate = X::RandomFloat(1.0f, 3.0f);
+			X::PlaySoundOneShot(mShootSoundId);
 		}
 	}
 
@@ -127,7 +146,11 @@ void BossFight::OnCollision(Collidable* collidable)
 		int damage = 0;
 		if (collidable->GetType() == ET_SHIP)
 		{
-			damage = 50;
+			if (mDamageCoolDown <= 0)
+			{
+				damage = 20;
+				mDamageCoolDown = 1.0f;
+			}
 		}
 		else
 		{

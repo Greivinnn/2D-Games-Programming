@@ -23,6 +23,7 @@ Enemy::Enemy()
 	, mHomeOffset(0.0f, 0.0f)
 	, mHoverRadius(0.0f)
 	, mJustDied(false)
+	, mShootSoundId(0)
 {}
 Enemy::~Enemy()
 {
@@ -33,6 +34,9 @@ void Enemy::Load()
 {
 	mImageId = X::LoadTexture("carrier_01.png");
 	XASSERT(mImageId > 0, "Enemy: image did not load");
+
+	mShootSoundId = X::LoadSound("laser-gun-enemies.wav");
+	XASSERT(mShootSoundId > 0, "Enemy: sound did not load");
 
 	mPosition = X::Math::Vector2::Zero();
 	mRotation = 0.0f;
@@ -96,6 +100,8 @@ void Enemy::Update(float deltaTime)
 					bullet->SetEntityType(ET_BULLET_ENEMY);
 					bullet->SetActive(spawnPos, mRotation, 3.0f);
 					mFireRate = X::RandomFloat(1.0f, 3.0f);
+
+					X::PlaySoundOneShot(mShootSoundId);
 				}
 			}
 		}

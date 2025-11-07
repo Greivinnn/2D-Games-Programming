@@ -46,4 +46,7 @@ private:
 	X::Math::Vector2 mTargetPosition;
 	float mTargetPositionUpdate;
 	float mFireRate;
+
+	X::SoundId mShootSoundId;
+	float mDamageCoolDown;
 };

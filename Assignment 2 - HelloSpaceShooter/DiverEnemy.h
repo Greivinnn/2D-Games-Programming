@@ -61,4 +61,5 @@ private:
 	float mWaitTime;
 	float mDiveSpeed;
 	X::Math::Vector2 mDiveDirection;
+
 };

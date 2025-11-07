@@ -58,4 +58,6 @@ private:
 	X::Math::Vector2 mHomeOffset;
 	float mHoverRadius;
 	bool mJustDied;
+
+	X::SoundId mShootSoundId;
 };

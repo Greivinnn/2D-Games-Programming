@@ -58,4 +58,6 @@ private:
 
 	BossFight* mBossFight;
 	bool mBossDefeated;
+
+	X::TextureId mBackgroundId;
 };

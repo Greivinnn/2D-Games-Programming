@@ -12,6 +12,7 @@ StartState::~StartState()
 
 void StartState::Load()
 {
+
 }
 
 State StartState::Update(float deltaTime)

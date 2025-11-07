@@ -8,7 +8,8 @@ enum EntityType : int
 	ET_BULLET_PLAYER	= 1 << 1,	// 0000 0000 0010
 	ET_BULLET_ENEMY		= 1 << 2,	// 0000 0000 0100
 	ET_ENEMY			= 1 << 3,	// 0000 0000 1000
-	ET_POWERUP_HEALTH	= 1 << 4	// 0000 0001 0000
+	ET_POWERUP_HEALTH	= 1 << 4,	// 0000 0001 0000
+	ET_BULLET_BOSS		= 1 << 5,
 };
 
 enum class State

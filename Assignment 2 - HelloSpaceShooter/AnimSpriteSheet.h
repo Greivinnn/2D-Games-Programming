@@ -29,4 +29,7 @@ private:
 	int mMaxFrames;
 	int mCurrentIndex;
 	bool mIsLooping;
+
+	X::SoundId mExplosionSound;
+	bool mHasPlayedSound;
 };

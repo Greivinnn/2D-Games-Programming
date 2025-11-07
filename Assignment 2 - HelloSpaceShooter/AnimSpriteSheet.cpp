@@ -4,7 +4,7 @@ AnimSpriteSheet::AnimSpriteSheet()
 	:Entity()
 	, mSpriteSheetId(0)
 	, mSpriteRect()
-	, mPosition(0.0f, 0.0f)	
+	, mPosition(0.0f, 0.0f)
 	, mFrameRate(0.0f)
 	, mCurrentFrameTime(0.0f)
 	, mRows(0)
@@ -12,7 +12,8 @@ AnimSpriteSheet::AnimSpriteSheet()
 	, mMaxFrames(0)
 	, mCurrentIndex(0)
 	, mIsLooping(false)
-
+	, mExplosionSound(0)
+	, mHasPlayedSound(false)
 {
 
 }
@@ -26,6 +27,7 @@ AnimSpriteSheet::~AnimSpriteSheet()
 void AnimSpriteSheet::Load() 
 {
 	mSpriteSheetId = X::LoadTexture("explosion_anim.png");
+	mExplosionSound = X::LoadSound("explosion.wav");
 	mSpriteRect.right = 100.0f;
 	mSpriteRect.bottom = 100.0f;
 	mMaxFrames = 81;
@@ -39,6 +41,12 @@ void AnimSpriteSheet::Update(float deltaTime)
 {
 	if (IsActive())
 	{
+
+		if (!mHasPlayedSound)
+		{
+			X::PlaySoundOneShot(mExplosionSound);
+			mHasPlayedSound = true;
+		}
 		mCurrentFrameTime += deltaTime;
 		while (mCurrentFrameTime > mFrameRate)
 		{
@@ -64,6 +72,7 @@ void AnimSpriteSheet::Update(float deltaTime)
 		mSpriteRect.top = (mCurrentIndex / mColumns) * recHeight;
 		mSpriteRect.right = mSpriteRect.left + recWidth;
 		mSpriteRect.bottom = mSpriteRect.top + recHeight;
+		
 	}
 }
 void AnimSpriteSheet::Render()
@@ -85,6 +94,7 @@ void AnimSpriteSheet::SetActive(const X::Math::Vector2& position, bool loop)
 	mIsLooping = loop;
 	mCurrentIndex = 0;
 	mCurrentFrameTime = 0.0f;
+	mHasPlayedSound = false;
 }
 bool AnimSpriteSheet::IsActive() const
 {

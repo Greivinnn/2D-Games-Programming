@@ -35,4 +35,8 @@ private:
 
 	AnimSpriteSheet* mExplosion;
 	Pool* mBulletPool;
+
+	X::SoundId mShootSoundId;
+
+	float mDamageCooldown;
 };

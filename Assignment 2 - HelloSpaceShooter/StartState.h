@@ -12,5 +12,4 @@ public:
 	void Render() override;
 	void Unload() override;
 private:
-
 };

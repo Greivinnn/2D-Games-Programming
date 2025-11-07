@@ -32,7 +32,7 @@ DiverEnemy::~DiverEnemy()
 void DiverEnemy::Load()
 {
 	mImageId = X::LoadTexture("interceptor_01.png");
-	XASSERT(mImageId > 0, "Enemy: image did not load");
+	XASSERT(mImageId > 0, "DiverEnemy: image did not load");
 
 	float screenWidth = X::GetScreenWidth();
 
@@ -53,6 +53,7 @@ void DiverEnemy::Load()
 
 void DiverEnemy::Update(float deltaTime)
 {
+	bool soundPlayed = false;
 	if(!IsAlive())
 	{
 		mExplosion->Update(deltaTime);
@@ -80,7 +81,7 @@ void DiverEnemy::Update(float deltaTime)
 		{
 			// move straight in locked direction
 			mPosition += mDiveDirection * mDiveSpeed * deltaTime;
-
+			
 			// if off screen, die
 			float screenW = (float)X::GetScreenWidth();
 			float screenH = (float)X::GetScreenHeight();

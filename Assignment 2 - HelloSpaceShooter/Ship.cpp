@@ -13,6 +13,8 @@ Ship::Ship()
 	, mMaxHealth(100)
 	, mBulletPool(nullptr)
 	, mExplosion(nullptr)
+	, mShootSoundId(0)
+	, mDamageCooldown(0.0f)
 {
 
 }
@@ -26,36 +28,47 @@ void Ship::Load()
 	mImageId = X::LoadTexture("fighter.png");
 	XASSERT(mImageId != 0, "Ship: image did not load");
 
+	mShootSoundId = X::LoadSound("lazer-gun.wav");
+	XASSERT(mShootSoundId != 0, "Ship: sound did not load");
+
 	mPosition.x = X::GetScreenWidth() * 0.5f;
 	mPosition.y = X::GetScreenHeight() * 0.5f;
 
-	SetCollisionFilter(ET_ENEMY | ET_BULLET_ENEMY);
+	SetCollisionFilter(ET_ENEMY | ET_BULLET_ENEMY | ET_BULLET_BOSS);
 
 	mHealth = mMaxHealth;
 	mExplosion = new AnimSpriteSheet();
 	mExplosion->Load();
+
+	mDamageCooldown = 0.0f;
 }
 void Ship::Update(float deltaTime)
 {
+	if (mDamageCooldown > 0.0f)
+	{
+		mDamageCooldown -= deltaTime;
+	}
+
 	if (IsAlive())
 	{
-		const float speed = 200.0f;
-		const float turnSpeed = X::Math::kPiByTwo;
+		// mouse rotation 
+		float mouseX = X::GetMouseScreenX();
+		float mouseY = X::GetMouseScreenY();
+
+		X::Math::Vector2 mousePos(mouseX, mouseY);
+		X::Math::Vector2 directionToMouse = mousePos - mPosition;
+
+		mRotation = atan2(directionToMouse.y, directionToMouse.x) + X::Math::kPiByTwo;
+
+		const float speed = 300.0f;
+
 		if (X::IsKeyDown(X::Keys::W))
 		{
 			mPosition += X::Math::Vector2::Forward(mRotation) * speed * deltaTime;
 		}
-		else if (X::IsKeyDown(X::Keys::S))
+		if (X::IsKeyDown(X::Keys::S))
 		{
 			mPosition -= X::Math::Vector2::Forward(mRotation) * speed * deltaTime;
-		}
-		if (X::IsKeyDown(X::Keys::A))
-		{
-			mRotation -= turnSpeed * deltaTime;
-		}
-		else if (X::IsKeyDown(X::Keys::D))
-		{
-			mRotation += turnSpeed * deltaTime;
 		}
 
 		if (X::IsKeyPressed(X::Keys::SPACE))
@@ -64,6 +77,8 @@ void Ship::Update(float deltaTime)
 			Bullet* bullet = mBulletPool->GetBullet();
 			bullet->SetEntityType(ET_BULLET_PLAYER);
 			bullet->SetActive(spawnpos, mRotation, 2.0f);
+
+			X::PlaySoundOneShot(mShootSoundId);
 		}
 	}
 	
@@ -99,17 +114,34 @@ void Ship::OnCollision(Collidable* collidable)
 			return; // No damage taken from health power-up
 		}
 
+		if (mDamageCooldown > 0.0f)
+		{
+			return;
+		}
+
 		int damage = 0;
 		if (collidable->GetType() == ET_ENEMY)
 		{
-			damage = 10;
-			
+			if (collidable->GetRadius() > 50.0f)
+			{
+				damage = 30;
+			}
+			else
+			{
+				damage = 10;
+			}
 		}
-		else
+		else if (collidable->GetType() == ET_BULLET_BOSS)
 		{
-			damage = 2;
+			damage = 20;
+		}
+		else if (collidable->GetType() == ET_BULLET_ENEMY)
+		{
+			damage = 10;
 		}
 		mHealth -= damage;
+
+		mDamageCooldown = 1.0f;
 
 		if (!IsAlive())
 		{
