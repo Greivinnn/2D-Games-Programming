@@ -10,6 +10,7 @@ class Enemy;
 class ProgressBar;
 class DiverEnemy;	
 class HealthPowerUp;
+class BossFight;
 
 class Game : public Entity
 {
@@ -31,7 +32,7 @@ public:
 	bool AllEnemiesDead() const;
 	void SpawnDiverEnemy();
 	void SpawnHealthPowerUp(const X::Math::Vector2& position);
-	void BossFight();
+	void SpawnBoss();
 private:
 	Ship* mPlayer;
 	Pool* mBulletPool;
@@ -54,4 +55,7 @@ private:
 	int mMaxDiverEnemiesSpawn;
 	// health powerup variables
 	std::vector<HealthPowerUp*> mHealthPowerUps;
+
+	BossFight* mBossFight;
+	bool mBossDefeated;
 };

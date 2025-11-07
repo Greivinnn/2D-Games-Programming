@@ -6,6 +6,7 @@
 #include "ProgressBar.h"
 #include "DiverEnemy.h"	
 #include "HealthPowerUp.h"
+#include "BossFight.h"
 
 //static int minSpawnAmount = 5;
 //static int maxSpawnAmount = 10;
@@ -25,7 +26,7 @@ Game::Game()
 	, mDeathEnemies(NULL)
 	, mHealthBar(nullptr)
 	, mSurvivalTimer(0.0f)
-	, mSurviveTimeGoal(60.0f)
+	, mSurviveTimeGoal(10.0f)
 	, mBossSpawned(false)
 	, mMinSpawnAmount(2)
 	, mMaxSpawnAmount(4)
@@ -34,6 +35,8 @@ Game::Game()
 	, mDiverSpawnCount(1)
 	, mHealthPowerUps(NULL)
 	, mMaxDiverEnemiesSpawn(6)
+	, mBossFight(nullptr)
+	, mBossDefeated(false)
 {
 }
 
@@ -79,7 +82,13 @@ void Game::Load()
 
 	SpawnWave();
 
-	
+	mBossFight = new BossFight();
+	mBossFight->Load();
+	mBossFight->SetBulletPool(mBulletPool);
+	mBossFight->SetShip(mPlayer);
+
+	X::Math::Vector2 bossPosition = { X::GetScreenWidth() * 0.5f, -200.0f };
+	mBossFight->SetPosition(bossPosition);
 
 	mBulletPool->Load();
 	std::vector<Bullet*>& bullets = mBulletPool->GetBullets();
@@ -111,7 +120,7 @@ void Game::Update(float deltaTime)
 		SpawnWave();
 	}
 
-	if(mSurvivalTimer >= mNextDiverSpawnTime)
+	if(!mBossSpawned && mSurvivalTimer >= mNextDiverSpawnTime)
 	{
 		for(int i = 0; i < mDiverSpawnCount; ++i)
 		{
@@ -129,8 +138,17 @@ void Game::Update(float deltaTime)
 
 	if (!mBossSpawned && mSurvivalTimer >= mSurviveTimeGoal)
 	{
-		mBossSpawned = true;
-		
+		SpawnBoss();
+	}
+
+	if (mBossSpawned)
+	{
+		mBossFight->Update(deltaTime);
+
+		if(!mBossDefeated && !mBossFight->IsAlive())
+		{
+			mBossDefeated = true;
+		}
 	}
 
 	//// assignemnt addition: check if all enemies are dead
@@ -195,6 +213,10 @@ void Game::Update(float deltaTime)
 	int numCollidables = mCollidables.size();
 	for (int i = 0; i < numCollidables; ++i)
 	{
+		if (mCollidables[i] == nullptr)
+		{
+			continue;
+		}
 		for (int n = i + 1; n < numCollidables; ++n)
 		{
 			if (mCollidables[i]->DidCollide(mCollidables[n]))
@@ -226,6 +248,11 @@ void Game::Render()
 	}
 	mBulletPool->Render();
 	mHealthBar->Render();
+	
+	if (mBossSpawned)
+	{
+		mBossFight->Render();
+	}
 }
 
 void Game::Unload()
@@ -265,6 +292,8 @@ void Game::Unload()
 		powerUp = nullptr;
 	}
 	mHealthPowerUps.clear();
+
+	mBossFight->Unload();
 }
 
 void Game::AddCollidable(Collidable* collidable)
@@ -274,7 +303,7 @@ void Game::AddCollidable(Collidable* collidable)
 
 bool Game::IsGameOver()
 {
-	return !mPlayer->IsAlive();
+	return !mPlayer->IsAlive() || mBossDefeated == true;
 }
 
 // assignemnt addition functions
@@ -353,9 +382,47 @@ void Game::SpawnHealthPowerUp(const X::Math::Vector2& position)
 	}
 }
 
-void Game::BossFight()
+void Game::SpawnBoss()
 {
+	mBossSpawned = true;
 
+	for (Enemy* enemy : mEnemies)
+	{
+		enemy->Unload();
+		delete enemy;
+		enemy = nullptr;
+	}
+	mEnemies.clear();
+
+	for(DiverEnemy* diver : mDiverEnemies)
+	{
+		diver->Unload();
+		delete diver;
+		diver = nullptr;
+	}
+	mDiverEnemies.clear();
+
+	mCollidables.clear();
+
+	AddCollidable(mPlayer);
+
+	std::vector<Bullet*> bullets = mBulletPool->GetBullets();
+
+	for (Bullet* bullet : bullets)
+	{
+		AddCollidable(bullet);
+	}
+
+	for (HealthPowerUp* powerUp : mHealthPowerUps)
+	{
+		AddCollidable(powerUp);
+	}
+
+	X::Math::Vector2 bossPosition = { X::GetScreenWidth() * 0.5f, 150.0f };
+	mBossFight->SetPosition(bossPosition);
+	mBossFight->SetCenterPoint(bossPosition);
+
+	AddCollidable(mBossFight);
 }
 
 
