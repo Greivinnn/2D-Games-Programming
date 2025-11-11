@@ -3,6 +3,9 @@
 
 EndState::EndState()
 	:GameState(State::End)
+	, mBackgroundId(0)
+	, mSoundId(0)
+	, mStartPlaying(false)
 {
 }
 
@@ -12,12 +15,18 @@ EndState::~EndState()
 
 void EndState::Load()
 {
+	mBackgroundId = X::LoadTexture("EndGameScreen.png");
+	mSoundId = X::LoadSound("OutroSong.wav");
+	mStartPlaying = true;
 }
 
 State EndState::Update(float deltaTime)
 {
+	PlaySong();
 	if (X::IsKeyPressed(X::Keys::ENTER))
 	{
+		mStartPlaying = false;
+		PlaySong();
 		return State::Start;
 	}
 
@@ -26,14 +35,23 @@ State EndState::Update(float deltaTime)
 
 void EndState::Render()
 {
-	const float textSize = 100.0f;
-	const char* text = "\n\n<GAME OVER>";
-	float textWidth = X::GetTextWidth(text, textSize);
-	float screenX = (X::GetScreenWidth() - textWidth) * 0.5f;
-	float screenY = (X::GetScreenHeight() - textWidth) * 0.5f;
-	X::DrawScreenText(text, screenX, screenY, textSize, X::Colors::Green);
+	X::Math::Vector2 backgroundPos = { X::GetScreenWidth() * 0.5f, X::GetScreenHeight() * 0.5f };
+	X::DrawSprite(mBackgroundId, backgroundPos);
 }
 
 void EndState::Unload()
 {
 }
+
+void EndState::PlaySong()
+{
+	if (mStartPlaying)
+	{
+		X::PlaySoundLoop(mSoundId);
+	}
+	else
+	{
+		X::StopSoundLoop(mSoundId);
+	}
+}
+

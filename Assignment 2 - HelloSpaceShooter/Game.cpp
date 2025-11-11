@@ -26,7 +26,7 @@ Game::Game()
 	, mDeathEnemies(NULL)
 	, mHealthBar(nullptr)
 	, mSurvivalTimer(0.0f)
-	, mSurviveTimeGoal(10.0f)	// this is the counter for the boss to appear
+	, mSurviveTimeGoal(20.0f)	// this is the counter for the boss to appear
 	, mBossSpawned(false)
 	, mMinSpawnAmount(2)
 	, mMaxSpawnAmount(4)

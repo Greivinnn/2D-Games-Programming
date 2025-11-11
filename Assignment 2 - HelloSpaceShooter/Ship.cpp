@@ -89,7 +89,7 @@ void Ship::Render()
 	if (IsAlive())
 	{
 		X::DrawSprite(mImageId, mPosition, mRotation);
-		X::DrawScreenCircle(mPosition, GetRadius(), X::Colors::Pink);
+		/*X::DrawScreenCircle(mPosition, GetRadius(), X::Colors::Pink);*/
 	}
 	mExplosion->Render();
 }

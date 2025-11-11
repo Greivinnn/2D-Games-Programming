@@ -116,7 +116,7 @@ void BossFight::Render()
 	if (IsAlive())
 	{
 		X::DrawSprite(mImageId, mPosition, mRotation);
-		X::DrawScreenCircle(mPosition, GetRadius(), X::Colors::AliceBlue);
+		/*X::DrawScreenCircle(mPosition, GetRadius(), X::Colors::AliceBlue);*/
 	}
 	mExplosion->Render();
 }
