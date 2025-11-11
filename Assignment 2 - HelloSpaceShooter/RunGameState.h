@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.h"
+#include "Entity.h"
 
 class Game;
 
@@ -13,6 +14,10 @@ public:
 	State Update(float deltaTime) override;
 	void Render() override;
 	void Unload() override;
+
+	void PlaySong();
 private:
 	Game* mGame;
+	X::SoundId mSoundId;
+	bool mStartPlaying;
 };

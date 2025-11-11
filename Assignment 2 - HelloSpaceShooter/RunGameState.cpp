@@ -5,6 +5,8 @@
 RunGameState::RunGameState()
 	:GameState(State::RunGame)
 	, mGame(nullptr)
+	, mSoundId(0)
+	, mStartPlaying(false)
 {
 }
 
@@ -16,10 +18,13 @@ void RunGameState::Load()
 {
 	mGame = new Game();
 	mGame->Load();
+	mSoundId = X::LoadSound("RunStateMusic.wav");
+	mStartPlaying = true;
 }
 
 State RunGameState::Update(float deltaTime)
 {
+	PlaySong();
 	if (X::IsKeyPressed(X::Keys::ESCAPE))
 	{
 		return State::Start;
@@ -32,6 +37,8 @@ State RunGameState::Update(float deltaTime)
 
 	if (mGame && mGame->IsGameOver())
 	{
+		mStartPlaying = false;
+		PlaySong();
 		return State::End;
 	}
 
@@ -59,5 +66,17 @@ void RunGameState::Unload()
 		mGame->Unload();
 		delete mGame;
 		mGame = nullptr;
+	}
+}
+
+void RunGameState::PlaySong()
+{
+	if (mStartPlaying)
+	{
+		X::PlaySoundLoop(mSoundId);
+	}
+	else
+	{
+		X::StopSoundLoop(mSoundId);
 	}
 }
