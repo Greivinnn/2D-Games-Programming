@@ -132,6 +132,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Collidable.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="GameController.cpp" />
+    <ClCompile Include="Pickup.cpp" />
+    <ClCompile Include="PickupManager.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -141,8 +147,14 @@
     <None Include="xconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Collidable.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Enum.h" />
+    <ClInclude Include="GameController.h" />
+    <ClInclude Include="Pickup.h" />
+    <ClInclude Include="PickupManager.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />
   </ItemGroup>
