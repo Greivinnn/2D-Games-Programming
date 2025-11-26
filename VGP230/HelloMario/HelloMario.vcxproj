@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a583af86-f088-4108-887f-94a1d7a652a5}</ProjectGuid>
-    <RootNamespace>HelloZelda</RootNamespace>
+    <ProjectGuid>{53ceaacc-6412-41b9-9555-78735e33ad42}</ProjectGuid>
+    <RootNamespace>HelloMario</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -140,13 +140,10 @@
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="PickupManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="States.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="WinMain.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Level.lvl" />
-    <None Include="xconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collidable.h" />
@@ -159,8 +156,12 @@
     <ClInclude Include="Pickup.h" />
     <ClInclude Include="PickupManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="States.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="xconfig.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
