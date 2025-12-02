@@ -15,7 +15,7 @@ Player::Player()
     , mDamageCooldown(0.0f)
     , mShootCooldown(0.0f)
 	, mCurrentAmmo(0)
-	, mMaxAmmo(50)
+	, mMaxAmmo(20)
 {
 }
 
@@ -44,7 +44,7 @@ void Player::Load()
 
     mDamageCooldown = 0.0f;
     mShootCooldown = 0.0f;
-    mCurrentAmmo = 30;
+    mCurrentAmmo = 10;
 }
 
 void Player::Update(float deltaTime)
