@@ -76,6 +76,8 @@ void Bullet::Update(float deltaTime)
 		bulletRect.top = mPosition.y - halfHeight;
 		bulletRect.bottom = mPosition.y + halfHeight;
 		SetRect(bulletRect);
+
+		// in update: the bullets rect calculations are updated every frame based on players position
 	}
 }
 
@@ -121,7 +123,7 @@ void Bullet::SetEntityType(EntityType type)
 	}
 	else
 	{
-		SetCollisionFilter(ET_NONE);
+		SetCollisionFilter(ET_NONE);	// no ones else shoots bullets beside the player
 	}
 }
 

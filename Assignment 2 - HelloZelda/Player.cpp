@@ -9,7 +9,7 @@ Player::Player()
     , Collidable()
     , mImageID(0)
     , mPosition(0.0f, 0.0f)
-    , mHealth(10)
+    , mHealth(3)
     , mRemoveCollider(false)
     , mBulletPool(nullptr)
     , mDamageCooldown(0.0f)
@@ -214,3 +214,5 @@ int Player::GetCurrentAmmo() const
 {
     return mCurrentAmmo;
 }
+
+

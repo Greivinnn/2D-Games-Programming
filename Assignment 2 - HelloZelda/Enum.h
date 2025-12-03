@@ -17,3 +17,10 @@ enum TileType : int
 	TT_WALL,
 	TT_WATER
 };
+
+enum class State
+{
+	Start,
+	RunGame,
+	End
+};

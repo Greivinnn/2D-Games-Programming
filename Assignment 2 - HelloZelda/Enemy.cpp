@@ -37,6 +37,7 @@ void Enemy::Load()
 	mEnemyRect.top = -halfHeight;
 	mEnemyRect.bottom = halfHeight;
 }
+
 void Enemy::Update(float deltaTime)
 {
 	if (mRemoveCollider)

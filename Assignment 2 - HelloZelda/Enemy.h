@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Collidable.h"
 
+
 class Enemy : public Entity, public Collidable
 {
 public:
