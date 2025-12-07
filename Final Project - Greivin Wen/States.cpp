@@ -103,6 +103,25 @@ MovementState WalkState::Update(float deltaTime)
 			return MS_IDLE;
 		}
 	}
+	X::Math::Vector2 displacement;
+	displacement.x = mVelocity.x * deltaTime;
+	displacement.y = cWalkSpeed * deltaTime;
+	X::Math::Vector2 position = mPlayer->GetPosition();
+	X::Math::Vector2 maxDisplacement = displacement;
+	if (TileMap::Get()->HasCollision(mPlayer->GetRect(), maxDisplacement, displacement))
+	{
+		//XLOG("hit wall");
+	}
+	position += displacement;
+	
+	mPlayer->SetVelocity(mVelocity);
+	mPlayer->SetPosition(position);
+
+	if(displacement.y > 0.0f)
+	{
+		return MS_FALL;
+	}
+	return MS_WALK;
 }
 void WalkState::OnExitState()
 {
@@ -112,7 +131,8 @@ void WalkState::OnExitState()
 
 
 JumpState::JumpState(Player* player)
-	:
+	: State(player)
+	, mVelocity(0.0f, 0.0f)
 {
 
 }
@@ -123,11 +143,52 @@ JumpState::~JumpState()
 
 void JumpState::OnEnterState()
 {
-
+	mVelocity = mPlayer->GetVelocity();
+	mVelocity.y = -cJumpSpeed;
 }
 MovementState JumpState::Update(float deltaTime)
 {
-
+	if (X::IsKeyDown(X::Keys::A))
+	{
+		mVelocity.x -= cWalkSpeed * deltaTime;
+		mVelocity.x = X::Math::Max(mVelocity.x, -cMaxWalkSpeed);
+	}
+	else if (X::IsKeyDown(X::Keys::D))
+	{
+		mVelocity.x += cWalkSpeed * deltaTime;
+		mVelocity.x = X::Math::Min(mVelocity.x, cMaxWalkSpeed);
+	}
+	else
+	{
+		if (mVelocity.x < 0.0f)
+		{
+			mVelocity.x += cFrictionAccel * 0.5 * deltaTime;
+		}
+		else if (mVelocity.x > 0.0f)
+		{
+			mVelocity.x -= cFrictionAccel * 0.5 * deltaTime;
+		}
+		if(abs(mVelocity.x) < 0.1f)
+		{
+			mVelocity.x = 0.0f;
+		}
+	}
+	mVelocity.y += cFallAccel * deltaTime;
+	X::Math::Vector2 displacement = mVelocity * deltaTime;
+	X::Math::Vector2 maxDisplacement = displacement;
+	X::Math::Vector2 position = mPlayer->GetPosition();
+	if(TileMap::Get()->HasCollision(mPlayer->GetRect(), maxDisplacement, displacement))
+	{
+		
+	}
+	position += displacement;
+	mPlayer->SetVelocity(mVelocity);
+	mPlayer->SetPosition(position);
+	if (mVelocity.y > 0.0f)
+	{
+		return MS_FALL;
+	}
+	return MS_JUMP;
 }
 void JumpState::OnExitState()
 {
@@ -135,7 +196,8 @@ void JumpState::OnExitState()
 }
 
 FallState::FallState(Player* player)
-	:
+	: State(player)
+	, mVelocity(0.0f, 0.0f)
 {
 
 }
@@ -146,11 +208,55 @@ FallState::~FallState()
 
 void FallState::OnEnterState()
 {
-
+	mVelocity = mPlayer->GetVelocity();
 }
 MovementState FallState::Update(float deltaTime)
 {
+	if (X::IsKeyDown(X::Keys::A))
+	{
+		mVelocity.x -= cWalkSpeed * deltaTime;
+		mVelocity.x = X::Math::Max(mVelocity.x, -cMaxWalkSpeed);
+	}
+	else if (X::IsKeyDown(X::Keys::D))
+	{
+		mVelocity.x += cWalkSpeed * deltaTime;
+		mVelocity.x = X::Math::Min(mVelocity.x, cMaxWalkSpeed);
+	}
+	else
+	{
+		if (mVelocity.x < 0.0f)
+		{
+			mVelocity.x += cFrictionAccel * 0.5 * deltaTime;
+		}
+		else if (mVelocity.x > 0.0f)
+		{
+			mVelocity.x -= cFrictionAccel * 0.5 * deltaTime;
+		}
+		if (abs(mVelocity.x) < 0.1f)
+		{
+			mVelocity.x = 0.0f;
+		}
+	}
+	mVelocity.y += cFallAccel * deltaTime;
+	X::Math::Vector2 displacement = mVelocity * deltaTime;
+	X::Math::Vector2 maxDisplacement = displacement;
+	X::Math::Vector2 position = mPlayer->GetPosition();
+	if (TileMap::Get()->HasCollision(mPlayer->GetRect(), maxDisplacement, displacement))
+	{
 
+	}
+	position += displacement;
+	mPlayer->SetVelocity(mVelocity);
+	mPlayer->SetPosition(position);
+	if(displacement.y < maxDisplacement.y)
+	{
+		if(abs(displacement.x) > 0.0f)
+		{
+			return MS_WALK;
+		}
+		return MS_IDLE;
+	}
+	return MS_FALL;
 }
 void FallState::OnExitState()
 {
