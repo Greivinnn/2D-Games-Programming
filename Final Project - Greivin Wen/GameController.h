@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Player.h"
+#include "BulletPool.h"  
 
 class GameController : public Entity
 {
@@ -18,4 +19,5 @@ private:
     static GameController* mInstance;
 
     Player mPlayer;
+    BulletPool mBulletPool;  
 };

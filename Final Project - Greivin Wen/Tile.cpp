@@ -18,8 +18,8 @@ void Tile::Load()
 {
 	switch (mTileType)
 	{
-	case TT_GROUND: mImageId = X::LoadTexture("green.jpg"); break;
-	case TT_WALL: mImageId = X::LoadTexture("purple.jpg"); break;
+	case TT_GROUND: mImageId = X::LoadTexture("Grass(2).png"); break;
+	case TT_WALL: mImageId = X::LoadTexture("Brick.png"); break;
 	case TT_WATER: mImageId = X::LoadTexture("cyan.jpg"); break;
 	case TT_NONE:
 	default:

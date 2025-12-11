@@ -4,7 +4,7 @@
 
 class EnemyManager : public Entity
 {
-	public:
+public:
 	~EnemyManager();
 	static EnemyManager* Get();
 
@@ -12,11 +12,26 @@ class EnemyManager : public Entity
 	void Update(float deltaTime) override;
 	void Render() override;
 	void Unload() override;
-	
-	void SpawnEnemies(int amount);	
+
+	void SpawnEnemies(int amount);
+
+	// Wave system
+	int GetCurrentWave() const;
+	int GetAliveEnemyCount() const;
+
+	void SetPlayer(class Player* player);
 private:
 	EnemyManager();
 	static EnemyManager* mInstance;
 	std::vector<Enemy*> mEnemies;
 	int mNextAvailableIndex;
+
+	// Wave system variables
+	int mCurrentWave;
+	int mEnemiesPerWave;
+	float mWaveStartDelay;
+	bool mWaveActive;
+
+	void StartNextWave();
+	void CheckWaveComplete();
 };

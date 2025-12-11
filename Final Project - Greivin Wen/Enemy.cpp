@@ -2,6 +2,7 @@
 #include "Enum.h"
 #include "TileMap.h"
 #include "CollisionManager.h"
+#include "Player.h"
 
 Enemy::Enemy()
 	: Entity()
@@ -15,6 +16,7 @@ Enemy::Enemy()
 	, mTargetPointUpdate(0.0f)
 	, mHealth(0)
 	, mRemoveCollider(false)
+	, mPlayer(nullptr)
 {
 
 }
@@ -25,9 +27,9 @@ Enemy::~Enemy()
 
 void Enemy::Load()
 {
-	mImageID = X::LoadTexture("stone.png");
+	mImageID = X::LoadTexture("zombieHead.png");
 	mTargetPointUpdate = 0.0f;	
-	mHealth = -1;
+	mHealth--;
 	mRemoveCollider = false;
 
 	float halfWidth = X::GetSpriteWidth(mImageID) * 0.5f;
@@ -37,6 +39,7 @@ void Enemy::Load()
 	mEnemyRect.top = -halfHeight;
 	mEnemyRect.bottom = halfHeight;
 }
+
 void Enemy::Update(float deltaTime)
 {
 	if (mRemoveCollider)
@@ -44,18 +47,18 @@ void Enemy::Update(float deltaTime)
 		CollisionManager::Get()->RemoveCollidable(this);
 		mRemoveCollider = false;
 	}
-	if(!IsActive())
+
+	if (!IsActive())
 	{
 		return;
 	}
 
 	const float speed = 70.0f;
-	const float offsetDistance = 200.0f;
-	mTargetPointUpdate -= deltaTime;
-	if(mTargetPointUpdate <= 0.0f || X::Math::Vector2::SqrMagnitude(mTargetPoint - mPosition) <= 100.0f)
+
+	// Chase the player 
+	if (mPlayer != nullptr)
 	{
-		mTargetPoint = mCenterPoint + (X::RandomUnitCircle() * offsetDistance);
-		mTargetPointUpdate = X::RandomFloat(1.0f, 5.0f);
+		mTargetPoint = mPlayer->GetPosition();
 	}
 
 	X::Math::Vector2 direction = X::Math::Normalize(mTargetPoint - mPosition);
@@ -66,13 +69,9 @@ void Enemy::Update(float deltaTime)
 		X::Math::Rect currentRect = mEnemyRect;
 		currentRect.min += mPosition;
 		currentRect.max += mPosition;
-		if(TileMap::Get()->HasCollision(currentRect, maxDisplacement, displacement))
+		if (TileMap::Get()->HasCollision(currentRect, maxDisplacement, displacement))
 		{
 			mPosition += displacement;
-			if (X::Math::Vector2::SqrMagnitude(displacement) <= 10.0f)
-			{
-				mTargetPointUpdate = 0.0f;
-			}
 		}
 		else
 		{
@@ -104,13 +103,19 @@ const X::Math::Vector2& Enemy::GetPosition() const
 {
 	return mPosition;
 }
-void Enemy::OnCollision(Collidable* collidable) 
+
+void Enemy::OnCollision(Collidable* collidable)
 {
-	if(IsActive())
+	if (IsActive())
 	{
-		if(collidable->GetType() == ET_PLAYER)
+		if (collidable->GetType() == ET_PLAYER)
 		{
-			mHealth -= -1;
+			mHealth = 0;
+			mRemoveCollider = true;
+		}
+		else if (collidable->GetType() == ET_BULLET)
+		{
+			mHealth = 0;
 			mRemoveCollider = true;
 		}
 	}
@@ -132,8 +137,13 @@ void Enemy::SetActive(const X::Math::Vector2& position, int health)
 	currentRect.min += position;
 	currentRect.max += position;
 	SetRect(mEnemyRect);
-	SetCollisionFilter(ET_PLAYER);
+	SetCollisionFilter(ET_PLAYER | ET_BULLET);
 
 	CollisionManager::Get()->AddCollidable(this);
 	mRemoveCollider = false;
+}
+
+void Enemy::SetPlayer(Player* player)
+{
+	mPlayer = player;
 }

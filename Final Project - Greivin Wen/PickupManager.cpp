@@ -4,7 +4,11 @@
 PickupManager* PickupManager::mInstance = nullptr;
 
 PickupManager::PickupManager()
-    : Entity(), mNextAvailableIndex(0)
+    : Entity()
+    , mNextAvailableIndex(0)
+    , mSpawnTimer(0.0f)
+    , mSpawnInterval(5.0f)  
+    , mMaxActivePickups(5)   
 {
 
 }
@@ -36,13 +40,26 @@ void PickupManager::Load()
     }
 
     mNextAvailableIndex = 0;
+    mSpawnTimer = 2.0f;  
 }
 
 void PickupManager::Update(float deltaTime)
 {
-    if (X::IsKeyPressed(X::Keys::P))
+    // Auto spawn system
+    mSpawnTimer -= deltaTime;
+
+    if (mSpawnTimer <= 0.0f)
     {
-        SpawnPickup(10);
+        int activePickups = GetActivePickupCount();
+
+        if (activePickups < mMaxActivePickups)
+        {
+            SpawnPickup(1);  
+
+            mSpawnInterval = X::RandomFloat(3.0f, 7.0f);
+        }
+
+        mSpawnTimer = mSpawnInterval;
     }
 
     for (Pickup* pickup : mPickups)
@@ -133,4 +150,17 @@ void PickupManager::SpawnPickup(int count)
             }
         }
     }
+}
+
+int PickupManager::GetActivePickupCount() const
+{
+    int count = 0;
+    for (const Pickup* pickup : mPickups)
+    {
+        if (pickup->IsActive())
+        {
+            count++;
+        }
+    }
+    return count;
 }

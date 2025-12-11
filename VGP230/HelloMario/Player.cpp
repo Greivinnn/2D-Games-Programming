@@ -1,9 +1,11 @@
 #include "Player.h"
 #include "CollisionManager.h"
 #include "TileMap.h"
+#include "States.h"
+#include "ProjectileManager.h"
 
 Player::Player()
-    : Entity(), Collidable(), mImageID(0), mPosition(0.0f, 0.0f), mHealth(100), mRemoveCollider(false)
+    : Entity(), Collidable(), mImageID(0), mPosition(0.0f, 0.0f), mHealth(100), mRemoveCollider(false), mFacingDirection(1.0f, 0.0f)
 {
 
 }
@@ -17,8 +19,7 @@ void Player::Load()
 {
     mImageID = X::LoadTexture("mushroom.png");
 
-    const Tile* safeTile = TileMap::Get()->GetFirstWalkableTile();
-    mPosition = safeTile->GetPosition();
+    
 
     float halfWidth = X::GetSpriteWidth(mImageID) * 0.5f;
     float halfHeight = X::GetSpriteHeight(mImageID) * 0.5f;
@@ -27,10 +28,19 @@ void Player::Load()
     mPlayerRect.top = -halfHeight;
     mPlayerRect.bottom = halfHeight;
 
-    SetRect(mPlayerRect);
+    const Tile* safeTile = TileMap::Get()->GetFirstWalkableTile();
+    SetPosition(safeTile->GetPosition());
+
     SetCollisionFilter(ET_ENEMY || ET_PICKUP);
     mRemoveCollider = false;
     CollisionManager::Get()->AddCollidable(this);
+
+    mStateMachine.CleanUp();
+    mStateMachine.AddState(MS_IDLE, new IdleState(this));
+    mStateMachine.AddState(MS_WALK, new WalkState(this));
+    mStateMachine.AddState(MS_JUMP, new JumpState(this));
+    mStateMachine.AddState(MS_FALL, new FallState(this));
+    mStateMachine.SetState(MS_FALL);
 }
 
 void Player::Update(float deltaTime)
@@ -46,49 +56,22 @@ void Player::Update(float deltaTime)
         return;
     }
 
-    const float speed = 200.0f;
-    X::Math::Vector2 direction = X::Math::Vector2::Zero();
-    X::Math::Vector2 displacement = X::Math::Vector2::Zero();
-
-    if (X::IsKeyDown(X::Keys::W))
+    mStateMachine.Update(deltaTime);
+    if (X::IsKeyDown(X::Keys::D))
     {
-        direction.y = -1.0f;
+        mFacingDirection.x = 1.0f;
     }
-    else if (X::IsKeyDown(X::Keys::S))
+    else if (X::IsKeyDown(X::Keys::A))
     {
-        direction.y = 1.0f;
-    }
-    if (X::IsKeyDown(X::Keys::A))
-    {
-        direction.x = -1.0f;
-    }
-    else if (X::IsKeyDown(X::Keys::D))
-    {
-        direction.x = 1.0f;
+        mFacingDirection.x = -1.0f;
     }
 
-    if (X::Math::MagnitudeSqr(direction) > 0.0f)
+    if (X::IsKeyPressed(X::Keys::SPACE))
     {
-        direction = X::Math::Normalize(direction);
-        displacement = direction * speed * deltaTime;
-        X::Math::Vector2 maxDisplacement = displacement;
-        X::Math::Rect currentRect = mPlayerRect;
-        currentRect.min += mPosition;
-        currentRect.max += mPosition;
-
-        if (TileMap::Get()->HasCollision(currentRect, maxDisplacement, displacement))
-        {
-            mPosition += displacement;
-        }
-        else
-        {
-            mPosition += displacement;
-        }
-
-        currentRect = mPlayerRect;
-        currentRect.min += mPosition;
-        currentRect.max += mPosition;
-        SetRect(currentRect);
+        Projectile* projectile = ProjectileManager::Get()->GetProjectile();
+        projectile->SetActive(mPosition, mFacingDirection, 3.0f);
+        projectile->SetEntityType(ET_PLAYER_PROJECTILE);
+        projectile->SetFlip(mFacingDirection.x < 0.0f ? X::Flip::Horizontal : X::Flip::None);
     }
 }
 
@@ -108,6 +91,15 @@ void Player::Unload()
 int Player::GetType() const
 {
     return ET_PLAYER;
+}
+
+void Player::SetPosition(const X::Math::Vector2& position)
+{
+	mPosition = position;
+    X::Math::Rect currentRect = mPlayerRect;
+    currentRect.min += position;
+    currentRect.max += position;
+    SetRect(currentRect);
 }
 
 void Player::OnCollision(Collidable* collidable)
@@ -139,4 +131,14 @@ void Player::OnCollision(Collidable* collidable)
 const X::Math::Vector2& Player::GetPosition() const
 {
     return mPosition;
+}
+
+void Player::SetVelocity(const X::Math::Vector2& velocity)
+{
+	mVelocity = velocity;
+}
+
+const X::Math::Vector2& Player::GetVelocity() const
+{
+	return mVelocity;
 }

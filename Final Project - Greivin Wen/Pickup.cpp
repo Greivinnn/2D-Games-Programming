@@ -13,7 +13,7 @@ Pickup::~Pickup()
 
 void Pickup::Load()
 {
-    mImageID = X::LoadTexture("qmark.png");
+    mImageID = X::LoadTexture("bulletPickup.png");
     mIsActive = false;
     mRemoveCollider = false;
 }

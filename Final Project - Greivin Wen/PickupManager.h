@@ -20,4 +20,11 @@ private:
 
     std::vector<Pickup*> mPickups;
     int mNextAvailableIndex;
+
+    // Auto spawn system
+    float mSpawnTimer;
+    float mSpawnInterval;
+    int mMaxActivePickups;
+
+    int GetActivePickupCount() const;
 };

@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3fef33a6-a4c5-4ca2-9c79-37a726a351de}</ProjectGuid>
+    <ProjectGuid>{65793e8f-0840-4afa-b0b4-b8303d72852e}</ProjectGuid>
     <RootNamespace>FinalProjectGreivinWen</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -127,48 +127,48 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\X\X.vcxproj">
-      <Project>{6682bfd4-c79f-49bd-a114-6ee8fb79e8c3}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="BulletPool.cpp" />
     <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
-    <ClCompile Include="FSMController.cpp" />
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="PickupManager.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="ProjectileManager.cpp" />
-    <ClCompile Include="States.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Level.lvl" />
-    <None Include="xconfig.json" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="BulletPool.h" />
     <ClInclude Include="Collidable.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Enum.h" />
-    <ClInclude Include="FSMController.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="Pickup.h" />
     <ClInclude Include="PickupManager.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Projectile.h" />
-    <ClInclude Include="ProjectileManager.h" />
-    <ClInclude Include="States.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Level.lvl" />
+    <None Include="xconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\X\X.vcxproj">
+      <Project>{6682bfd4-c79f-49bd-a114-6ee8fb79e8c3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

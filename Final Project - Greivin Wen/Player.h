@@ -1,7 +1,9 @@
 #pragma once
 #include "Entity.h"
 #include "Collidable.h"
-#include "FSMController.h"
+#include "AnimationController.h"
+
+class BulletPool;
 
 class Player : public Entity, public Collidable
 {
@@ -18,19 +20,35 @@ public:
     void OnCollision(Collidable* collidable) override;
     const X::Math::Vector2& GetPosition() const override;
 
-    // player functions
-    void SetVelocity(const X::Math::Vector2& velocity);
-	const X::Math::Vector2& GetVelocity() const;
-	void SetPosition(const X::Math::Vector2& position);
+    void SetBulletPool(BulletPool* bulletPool);
+
+	void AddAmmo(int amount);   
+	int GetCurrentAmmo() const;
+
 private:
     X::TextureId mImageID;
     X::Math::Vector2 mPosition;
-	X::Math::Vector2 mVelocity;
-    X::Math::Vector2 mFacingDirection;
     X::Math::Rect mPlayerRect;
 
     int mHealth;
     bool mRemoveCollider;
+    BulletPool* mBulletPool;
+    float mDamageCooldown;
+    float mShootCooldown;
+	int mCurrentAmmo;
+	int mMaxAmmo;
 
-    FSMController mStateMachine;
+    float mIdleTimer;
+    const float mMaxIdleTime;
+    X::Math::Vector2 mLastPosition;
+    bool mIsIdle;
+    float mThunderCooldown;
+
+    // Animation
+    AnimationController mAnimationController;
+    X::Math::Vector2 mFacingDirection;
+
+    void LoadAnimations();
+    void UpdateAnimation(bool isMoving);
+
 };

@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Collidable.h"
 
+
 class Enemy : public Entity, public Collidable
 {
 public:
@@ -20,7 +21,7 @@ public:
 
 	bool IsActive() const;
 	void SetActive(const X::Math::Vector2& position, int health);
-
+	void SetPlayer(class Player* player);
 private:
 	X::TextureId mImageID;
 	X::Math::Vector2 mPosition;
@@ -31,4 +32,5 @@ private:
 	float mTargetPointUpdate;
 	int mHealth;
 	bool mRemoveCollider;
+	class Player* mPlayer;
 };

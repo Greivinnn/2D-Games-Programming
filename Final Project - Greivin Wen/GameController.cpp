@@ -3,7 +3,6 @@
 #include "PickupManager.h"
 #include "TileMap.h"
 #include "EnemyManager.h"
-#include "ProjectileManager.h"
 
 GameController* GameController::mInstance = nullptr;
 
@@ -12,6 +11,7 @@ GameController::GameController()
 {
 
 }
+
 GameController::~GameController()
 {
 
@@ -32,19 +32,27 @@ void GameController::Load()
     CollisionManager::Get()->Load();
     TileMap::Get()->Load();
     PickupManager::Get()->Load();
-	EnemyManager::Get()->Load();
-    ProjectileManager::Get()->Load();
+    EnemyManager::Get()->Load();
+
+    // Load bullet pool first
+    mBulletPool.Load();
+
+    // Then load player and give it the bullet pool
     mPlayer.Load();
+    mPlayer.SetBulletPool(&mBulletPool);
+
+    EnemyManager::Get()->SetPlayer(&mPlayer);
 }
 
 void GameController::Update(float deltaTime)
 {
     TileMap::Get()->Update(deltaTime);
     PickupManager::Get()->Update(deltaTime);
-	EnemyManager::Get()->Update(deltaTime);
+    EnemyManager::Get()->Update(deltaTime);
+
+    mBulletPool.Update(deltaTime);  // Update bullets
     mPlayer.Update(deltaTime);
 
-    ProjectileManager::Get()->Update(deltaTime);
     CollisionManager::Get()->Update(deltaTime);
 }
 
@@ -52,19 +60,20 @@ void GameController::Render()
 {
     TileMap::Get()->Render();
     PickupManager::Get()->Render();
-	EnemyManager::Get()->Render();
+    EnemyManager::Get()->Render();
+
+    mBulletPool.Render();  // Render bullets
     mPlayer.Render();
 
-    ProjectileManager::Get()->Render();
     CollisionManager::Get()->Render();
 }
 
 void GameController::Unload()
 {
     mPlayer.Unload();
-    ProjectileManager::Get()->Unload();
+    mBulletPool.Unload();  // Unload bullets
     PickupManager::Get()->Unload();
-	EnemyManager::Get()->Unload();
+    EnemyManager::Get()->Unload();
     TileMap::Get()->Unload();
     CollisionManager::Get()->Unload();
 }
