@@ -76,7 +76,6 @@ void EnemyManager::Render()
 		enemy->Render();
 	}
 
-	// Display wave info
 	if (!mWaveActive && mWaveStartDelay > 0.0f)
 	{
 		char buffer[128];
@@ -88,17 +87,37 @@ void EnemyManager::Render()
 		{
 			sprintf_s(buffer, "Wave %d starting in %.1f seconds...", mCurrentWave + 1, mWaveStartDelay);
 		}
-		float textWidth = X::GetTextWidth(buffer, 24.0f);
+
+		float fontSize = 36.0f; 
+		float textWidth = X::GetTextWidth(buffer, fontSize);
 		float centerX = (1280.0f - textWidth) * 0.5f;
-		X::DrawScreenText(buffer, centerX, 20.0f, 24.0f, X::Colors::Yellow);
+		float yPos = 30.0f;
+
+		X::DrawScreenText(buffer, centerX + 3.0f, yPos + 3.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX - 1.0f, yPos - 1.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX + 1.0f, yPos - 1.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX - 1.0f, yPos + 1.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX + 1.0f, yPos + 1.0f, fontSize, X::Colors::Black);  
+
+		X::DrawScreenText(buffer, centerX, yPos, fontSize, X::Colors::Yellow);
 	}
 	else if (mWaveActive)
 	{
 		char buffer[128];
 		sprintf_s(buffer, "Wave %d - Enemies: %d", mCurrentWave, GetAliveEnemyCount());
-		float textWidth = X::GetTextWidth(buffer, 24.0f);
+
+		float fontSize = 36.0f; 
+		float textWidth = X::GetTextWidth(buffer, fontSize);
 		float centerX = (1280.0f - textWidth) * 0.5f;
-		X::DrawScreenText(buffer, centerX, 20.0f, 24.0f, X::Colors::Yellow);
+		float yPos = 30.0f;
+
+		X::DrawScreenText(buffer, centerX + 3.0f, yPos + 3.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX - 1.0f, yPos - 1.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX + 1.0f, yPos - 1.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX - 1.0f, yPos + 1.0f, fontSize, X::Colors::Black);  
+		X::DrawScreenText(buffer, centerX + 1.0f, yPos + 1.0f, fontSize, X::Colors::Black);  
+
+		X::DrawScreenText(buffer, centerX, yPos, fontSize, X::Colors::Yellow);
 	}
 }
 
@@ -222,4 +241,22 @@ void EnemyManager::SetPlayer(Player* player)
 	{
 		enemy->SetPlayer(player);
 	}
+}
+
+void EnemyManager::Reset()
+{
+	// Deactivate all enemies
+	for (Enemy* enemy : mEnemies)
+	{
+		enemy->SetInactive();
+	}
+
+	// Reset pool index
+	mNextAvailableIndex = 0;
+
+	// Reset wave system to beginning
+	mCurrentWave = 0;
+	mEnemiesPerWave = 6;
+	mWaveStartDelay = 3.0f;
+	mWaveActive = false;
 }

@@ -63,3 +63,15 @@ std::vector<Bullet*>& BulletPool::GetBullets()
 {
 	return mBullets;
 }
+
+void BulletPool::Reset()
+{
+	// Deactivate all bullets
+	for (int i = 0; i < mBullets.size(); ++i)
+	{
+		mBullets[i]->SetInactive();
+	}
+
+	// Reset the pool index
+	mNextAvailableIndex = 0;
+}

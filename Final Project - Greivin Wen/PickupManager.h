@@ -13,7 +13,7 @@ public:
     void Unload() override;
 
     void SpawnPickup(int count);
-
+    void Reset();
 private:
     PickupManager();
     static PickupManager* mInstance;

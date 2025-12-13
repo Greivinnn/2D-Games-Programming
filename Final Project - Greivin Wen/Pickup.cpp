@@ -13,7 +13,7 @@ Pickup::~Pickup()
 
 void Pickup::Load()
 {
-    mImageID = X::LoadTexture("bulletPickup.png");
+    mImageID = X::LoadTexture("ammo-pistol.png");
     mIsActive = false;
     mRemoveCollider = false;
 }
@@ -79,4 +79,15 @@ void Pickup::SetActive(const X::Math::Vector2& position)
     SetRect(newRect);
     SetCollisionFilter(ET_PLAYER);
     CollisionManager::Get()->AddCollidable(this);
+}
+
+void Pickup::SetInactive()
+{
+    if (mIsActive)
+    {
+        CollisionManager::Get()->RemoveCollidable(this);
+    }
+    
+    mIsActive = false;
+    mRemoveCollider = false;
 }

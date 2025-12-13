@@ -20,7 +20,7 @@ Bullet::~Bullet()
 
 void Bullet::Load()
 {
-	mImageId = X::LoadTexture("bullet1.png");
+	mImageId = X::LoadTexture("pixelBullet.png");
 }
 
 void Bullet::Update(float deltaTime)
@@ -150,4 +150,18 @@ void Bullet::OnCollision(Collidable* collidable)
 		mRemoveCollider = true;
 		SetCollisionFilter(ET_NONE);
 	}
+}
+
+void Bullet::SetInactive()
+{
+	mLifeTime = 0.0f;
+
+	// Only remove from collision if it's currently active
+	if (IsActive())
+	{
+		CollisionManager::Get()->RemoveCollidable(this);
+	}
+
+	SetCollisionFilter(ET_NONE);
+	mRemoveCollider = false;
 }

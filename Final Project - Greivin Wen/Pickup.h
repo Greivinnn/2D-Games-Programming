@@ -20,6 +20,7 @@ public:
     bool IsActive() const;
     void SetActive(const X::Math::Vector2& position);
 
+    void SetInactive();
 private:
     X::TextureId mImageID;
     X::Math::Vector2 mPosition;

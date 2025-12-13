@@ -20,6 +20,7 @@ public:
 	int GetAliveEnemyCount() const;
 
 	void SetPlayer(class Player* player);
+	void Reset();
 private:
 	EnemyManager();
 	static EnemyManager* mInstance;

@@ -16,6 +16,7 @@ public:
 
 	Bullet* GetBullet();
 	std::vector<Bullet*>& GetBullets();
+	void Reset();
 
 private:
 	int mNextAvailableIndex;

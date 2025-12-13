@@ -20,6 +20,7 @@ public:
 	void SetActive(const X::Math::Vector2& pos, float rotation, float lifeTime = 2.0f);
 	void SetEntityType(EntityType type);
 	bool IsActive() const;
+	void SetInactive();
 private:
 	X::TextureId mImageId;
 	X::Math::Vector2 mPosition;

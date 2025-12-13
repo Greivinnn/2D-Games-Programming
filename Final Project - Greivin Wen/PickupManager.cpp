@@ -164,3 +164,19 @@ int PickupManager::GetActivePickupCount() const
     }
     return count;
 }
+
+void PickupManager::Reset()
+{
+    // Deactivate all pickups
+    for (Pickup* pickup : mPickups)
+    {
+        pickup->SetInactive();
+    }
+
+    // Reset pool index
+    mNextAvailableIndex = 0;
+
+    // Reset spawn timer
+    mSpawnTimer = 2.0f;
+    mSpawnInterval = 5.0f;
+}
