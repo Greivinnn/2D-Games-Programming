@@ -10,6 +10,7 @@ GameController* GameController::mInstance = nullptr;
 GameController::GameController()
     : Entity()
     , mCurrentState(State::Start)
+    , mTitleScreen(0)
 {
 
 }
@@ -36,17 +37,15 @@ void GameController::Load()
     PickupManager::Get()->Load();
     EnemyManager::Get()->Load();
 
-    // Load bullet pool first
     mBulletPool.Load();
 
-    // Then load player and give it the bullet pool
     mPlayer.Load();
     mPlayer.SetBulletPool(&mBulletPool);
 
     EnemyManager::Get()->SetPlayer(&mPlayer);
 
-    // Start in Start state
     mCurrentState = State::Start;
+	mTitleScreen = X::LoadTexture("FinalTitleScreen.png");
 }
 
 void GameController::Update(float deltaTime)
@@ -99,11 +98,9 @@ void GameController::ChangeState(State newState)
 {
     mCurrentState = newState;
 
-    // Handle state entry logic
     if (newState == State::RunGame)
     {
-        // Reset game when starting a new game
-        mPlayer.Reset();  // You'll need to implement this in Player class
+        mPlayer.Reset(); 
         EnemyManager::Get()->Reset();
         PickupManager::Get()->Reset();
         mBulletPool.Reset();
@@ -112,7 +109,6 @@ void GameController::ChangeState(State newState)
 
 void GameController::UpdateStartScreen(float deltaTime)
 {
-    // Check for input to start the game
     if (X::IsKeyPressed(X::Keys::SPACE) || X::IsKeyPressed(X::Keys::ENTER))
     {
         ChangeState(State::RunGame);
@@ -130,8 +126,7 @@ void GameController::UpdateRunGame(float deltaTime)
 
     CollisionManager::Get()->Update(deltaTime);
 
-    // Check if player is dead
-    if (mPlayer.IsDead())  // You'll need to implement this in Player class
+    if (mPlayer.IsDead()) 
     {
         ChangeState(State::End);
     }
@@ -139,7 +134,6 @@ void GameController::UpdateRunGame(float deltaTime)
 
 void GameController::UpdateEndScreen(float deltaTime)
 {
-    // Check for input to restart or quit
     if (X::IsKeyPressed(X::Keys::SPACE) || X::IsKeyPressed(X::Keys::ENTER))
     {
         ChangeState(State::RunGame);
@@ -148,9 +142,8 @@ void GameController::UpdateEndScreen(float deltaTime)
 
 void GameController::RenderStartScreen()
 {
-    // Render the start screen
-    X::DrawScreenText("GAME TITLE", X::GetScreenWidth() / 2 - 100, X::GetScreenHeight() / 2 - 50, 40, X::Colors::White);
-    X::DrawScreenText("Press SPACE or ENTER to Start", X::GetScreenWidth() / 2 - 150, X::GetScreenHeight() / 2 + 50, 20, X::Colors::White);
+    X::Math::Vector2 backgroundPos = { X::GetScreenWidth() * 0.5f, X::GetScreenHeight() * 0.5f };
+    X::DrawSprite(mTitleScreen, backgroundPos);
 }
 
 void GameController::RenderRunGame()
@@ -167,13 +160,8 @@ void GameController::RenderRunGame()
 
 void GameController::RenderEndScreen()
 {
-    // Render game over screen with the game state in background
-    RenderRunGame();  // Show the game state behind
+    RenderRunGame();  
 
-    // Draw semi-transparent overlay
-    // Note: You might need to implement a filled rectangle function or use a sprite
-
-    // Draw game over text
     X::DrawScreenText("GAME OVER", X::GetScreenWidth() / 2 - 100, X::GetScreenHeight() / 2 - 50, 40, X::Colors::Red);
     X::DrawScreenText("Press SPACE or ENTER to Restart", X::GetScreenWidth() / 2 - 180, X::GetScreenHeight() / 2 + 50, 20, X::Colors::White);
 }

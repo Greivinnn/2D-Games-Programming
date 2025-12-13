@@ -27,6 +27,11 @@ Player::Player()
     , mLightningAnimation(nullptr)
     , mShowLightning(false)
     , mLightningTimer(0.0f)
+    , mIsBlinking(false)
+    , mBlinkTimer(0.0f)
+    , mBlinkDuration(1.0f)
+    , mBlinkInterval(0.1f)  
+    , mIsVisible(true)
 {
 }
 
@@ -180,6 +185,10 @@ void Player::Reset()
         mLightningAnimation->Reset();
     }
 
+    mIsBlinking = false;
+    mBlinkTimer = 0.0f;
+    mIsVisible = true;
+
     // Re-enable collider if it was removed
     if (mRemoveCollider == true)
     {
@@ -249,6 +258,10 @@ void Player::Load()
     mIsIdle = false;
     mThunderCooldown = 0.0f;
     mFacingDirection = X::Math::Vector2(0.0f, 1.0f);
+
+    mIsBlinking = false;
+    mBlinkTimer = 0.0f;
+    mIsVisible = true;
 }
 
 void Player::UpdateAnimation(bool isMoving, bool isShooting)
@@ -298,6 +311,12 @@ void Player::UpdateAnimation(bool isMoving, bool isShooting)
     mAnimationController.SetCurrentAnimation(animationName);
 }
 
+void Player::TriggerDamageEffect()
+{
+    mIsBlinking = true;
+    mBlinkTimer = 0.0f;
+    mIsVisible = true;
+}
 
 void Player::Update(float deltaTime)
 {
@@ -337,6 +356,21 @@ void Player::Update(float deltaTime)
             mRemoveCollider = false;
         }
         return;
+    }
+
+    if (mIsBlinking)
+    {
+        mBlinkTimer += deltaTime;
+
+        int toggleCount = (int)(mBlinkTimer / mBlinkInterval);
+        mIsVisible = (toggleCount % 2 == 0);
+
+        if (mBlinkTimer >= mBlinkDuration)
+        {
+            mIsBlinking = false;
+            mIsVisible = true;
+            mBlinkTimer = 0.0f;
+        }
     }
 
     // Movement
@@ -455,12 +489,13 @@ void Player::Update(float deltaTime)
             {
                 // Thunder strike
                 mHealth -= 1;
-                mDamageCooldown = 0.5f;
+                mDamageCooldown = 1.0f;
                 mThunderCooldown = 3.0f;  // 3 second cooldown before next thunder
                 mIdleTimer = 0.0f;  // Reset idle timer
 
 				mShowLightning = true;
 				mLightningAnimation->Reset();
+				TriggerDamageEffect();
             }
         }
         else
@@ -504,7 +539,10 @@ void Player::Render()
 {
     if (mHealth > 0)
     {
-        mAnimationController.Render(mPosition);
+        if (mIsVisible)
+        {
+            mAnimationController.Render(mPosition);
+        }
 
         // Render lightning strike on top of player if active
         if (mShowLightning)
@@ -575,6 +613,7 @@ void Player::OnCollision(Collidable* collidable)
         {
             mHealth -= 1;
             mDamageCooldown = 1.0f;  
+			TriggerDamageEffect();
         }
     }
     else if (collidable->GetType() == ET_PICKUP)

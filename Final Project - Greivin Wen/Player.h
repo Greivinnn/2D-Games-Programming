@@ -62,8 +62,16 @@ private:
     bool mShowLightning;
     float mLightningTimer;
 
+    // Blinking/Damage effect
+    bool mIsBlinking;
+    float mBlinkTimer;
+    float mBlinkDuration;
+    float mBlinkInterval;
+    bool mIsVisible;
+
 	//Helper functions
     void LoadAnimations();
     void UpdateAnimation(bool isMoving, bool isShooting);
-	void RenderHealth() const;  
+	void RenderHealth() const; 
+	void TriggerDamageEffect();
 };

@@ -25,6 +25,7 @@ private:
     Player mPlayer;
     BulletPool mBulletPool;  
     State mCurrentState;
+    X::TextureId mTitleScreen;
 
     void UpdateStartScreen(float deltaTime);
     void UpdateRunGame(float deltaTime);
