@@ -3,6 +3,7 @@
 #include "TileMap.h"
 #include "Bullet.h"
 #include "BulletPool.h"
+#include "Pickup.h"
 
 Player::Player()
     : Entity()
@@ -10,6 +11,7 @@ Player::Player()
     , mImageID(0)
     , mPosition(0.0f, 0.0f)
     , mHealth(3)
+	, mMaxHealth(3)
     , mRemoveCollider(false)
     , mBulletPool(nullptr)
     , mDamageCooldown(0.0f)
@@ -618,7 +620,19 @@ void Player::OnCollision(Collidable* collidable)
     }
     else if (collidable->GetType() == ET_PICKUP)
     {
-        AddAmmo(5);
+        // Cast to Pickup to check what type it is
+        Pickup* pickup = dynamic_cast<Pickup*>(collidable);
+        if (pickup != nullptr)
+        {
+            if (pickup->GetPickupType() == PickupType::Ammo)
+            {
+                AddAmmo(5);
+            }
+            else if (pickup->GetPickupType() == PickupType::Health)
+            {
+                AddHealth(1);
+            }
+        }
     }
 
     mHealth = X::Math::Clamp(mHealth, 0, 100);
@@ -655,3 +669,8 @@ bool Player::IsDead() const
     return mHealth <= 0;
 }
 
+void Player::AddHealth(int amount)
+{
+    mHealth += amount;
+    mHealth = X::Math::Clamp(mHealth, 0, mMaxHealth);
+}

@@ -2,7 +2,14 @@
 #include "CollisionManager.h"
 
 Pickup::Pickup()
-    : Entity(), Collidable(), mImageID(0), mPosition(0.0f, 0.0f), mIsActive(false), mRemoveCollider(false)
+    : Entity()
+    , Collidable()
+    , mAmmoImageId(0)
+    , mPosition(0.0f, 0.0f)
+    , mIsActive(false)
+    , mRemoveCollider(false)
+	, mPickupType(PickupType::Ammo)
+	, mHealthImageId(0)
 {
 
 }
@@ -13,9 +20,11 @@ Pickup::~Pickup()
 
 void Pickup::Load()
 {
-    mImageID = X::LoadTexture("ammo-pistol.png");
+    mAmmoImageId = X::LoadTexture("ammo-pistol.png");
+	mHealthImageId = X::LoadTexture("HeartFull.png");
     mIsActive = false;
     mRemoveCollider = false;
+	mPickupType = PickupType::Ammo;
 }
 
 void Pickup::Update(float deltaTime)
@@ -31,7 +40,8 @@ void Pickup::Render()
 {
     if (mIsActive == true)
     {
-        X::DrawSprite(mImageID, mPosition);
+        X::TextureId textureToRender = (mPickupType == PickupType::Health) ? mHealthImageId : mAmmoImageId;
+        X::DrawSprite(textureToRender, mPosition);
     }
 }
 
@@ -64,12 +74,16 @@ bool Pickup::IsActive() const
     return mIsActive;
 }
 
-void Pickup::SetActive(const X::Math::Vector2& position)
+void Pickup::SetActive(const X::Math::Vector2& position, PickupType type)
 {
     mIsActive = true;
     mPosition = position;
-    float halfWidth = X::GetSpriteWidth(mImageID) * 0.5f;
-    float halfHeight = X::GetSpriteHeight(mImageID) * 0.5f;
+    mPickupType = type;
+
+    X::TextureId textureToUse = (type == PickupType::Health) ? mHealthImageId : mAmmoImageId;
+    float halfWidth = X::GetSpriteWidth(textureToUse) * 0.5f;
+    float halfHeight = X::GetSpriteHeight(textureToUse) * 0.5f;
+
     X::Math::Rect newRect;
     newRect.left = position.x - halfWidth;
     newRect.right = position.x + halfWidth;
@@ -90,4 +104,9 @@ void Pickup::SetInactive()
     
     mIsActive = false;
     mRemoveCollider = false;
+}
+
+PickupType Pickup::GetPickupType() const
+{
+    return mPickupType;
 }

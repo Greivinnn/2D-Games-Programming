@@ -54,7 +54,9 @@ void PickupManager::Update(float deltaTime)
 
         if (activePickups < mMaxActivePickups)
         {
-            SpawnPickup(1);  
+            // Randomly choose between Ammo (70% chance) and Health (30% chance)
+            PickupType typeToSpawn = (X::RandomFloat(0.0f, 1.0f) < 0.7f) ? PickupType::Ammo : PickupType::Health;
+            SpawnPickup(1, typeToSpawn);
 
             mSpawnInterval = X::RandomFloat(3.0f, 7.0f);
         }
@@ -88,7 +90,7 @@ void PickupManager::Unload()
     mPickups.clear();
 }
 
-void PickupManager::SpawnPickup(int count)
+void PickupManager::SpawnPickup(int count, PickupType type)
 {
     std::vector<Tile*> walkableTiles;
     TileMap::Get()->ObtainAllWalkableTiles(walkableTiles);
@@ -136,7 +138,7 @@ void PickupManager::SpawnPickup(int count)
             {
                 int randomIndex = X::Random(0, walkableTiles.size() - 1);
                 Tile* randomTile = walkableTiles[randomIndex];
-                pickup->SetActive(randomTile->GetPosition());
+                pickup->SetActive(randomTile->GetPosition(), type);
 
                 if (randomIndex < walkableTiles.size() - 1)
                 {
@@ -151,6 +153,7 @@ void PickupManager::SpawnPickup(int count)
         }
     }
 }
+
 
 int PickupManager::GetActivePickupCount() const
 {

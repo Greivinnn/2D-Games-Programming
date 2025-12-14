@@ -24,3 +24,9 @@ enum class State
 	RunGame,
 	End
 };
+
+enum class PickupType
+{
+	Ammo,
+	Health
+};

@@ -12,7 +12,7 @@ public:
     void Render() override;
     void Unload() override;
 
-    void SpawnPickup(int count);
+    void SpawnPickup(int count, PickupType type = PickupType::Ammo);
     void Reset();
 private:
     PickupManager();

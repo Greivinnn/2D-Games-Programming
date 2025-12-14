@@ -24,6 +24,7 @@ public:
 
 	void AddAmmo(int amount);   
 	int GetCurrentAmmo() const;
+	void AddHealth(int amount);
 
     bool IsDead() const;
     void Reset();
@@ -34,6 +35,7 @@ private:
     X::Math::Rect mPlayerRect;
 
     int mHealth;
+	int mMaxHealth;
     bool mRemoveCollider;
     BulletPool* mBulletPool;
     float mDamageCooldown;

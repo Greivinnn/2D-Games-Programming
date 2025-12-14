@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Collidable.h"
+#include "Enum.h"
 
 class Pickup : public Entity, public Collidable
 {
@@ -18,12 +19,16 @@ public:
     const X::Math::Vector2& GetPosition() const override;
 
     bool IsActive() const;
-    void SetActive(const X::Math::Vector2& position);
+    void SetActive(const X::Math::Vector2& position, PickupType type);
 
     void SetInactive();
+
+    PickupType GetPickupType() const;
 private:
-    X::TextureId mImageID;
+    X::TextureId mAmmoImageId;
+	X::TextureId mHealthImageId;
     X::Math::Vector2 mPosition;
+    PickupType mPickupType;
 
     bool mIsActive;
     bool mRemoveCollider;
