@@ -11,6 +11,12 @@ GameController::GameController()
     : Entity()
     , mCurrentState(State::Start)
     , mTitleScreen(0)
+	, mTitleSound(0)
+    , mPressSound(0)
+	, mStartPlaying(false)
+	, mRunGameSound(0)
+	, mRunGamePlaying(false)
+	, mGameOverSound(0)
 {
 
 }
@@ -46,6 +52,10 @@ void GameController::Load()
 
     mCurrentState = State::Start;
 	mTitleScreen = X::LoadTexture("FinalTitleScreen.png");
+    mTitleSound = X::LoadSound("FinalProjectTittleMusic.wav");
+    mRunGameSound = X::LoadSound("RunGameSound.wav");
+    mPressSound = X::LoadSound("game-start.wav");
+    mGameOverSound = X::LoadSound("GameOver.wav");
 }
 
 void GameController::Update(float deltaTime)
@@ -109,14 +119,21 @@ void GameController::ChangeState(State newState)
 
 void GameController::UpdateStartScreen(float deltaTime)
 {
+	mStartPlaying = true;
+    PlayTitleSound();
     if (X::IsKeyPressed(X::Keys::SPACE) || X::IsKeyPressed(X::Keys::ENTER))
     {
+		mStartPlaying = false;
+		PlayTitleSound();
+        X::PlaySoundOneShot(mPressSound);
         ChangeState(State::RunGame);
     }
 }
 
 void GameController::UpdateRunGame(float deltaTime)
 {
+	mRunGamePlaying = true;
+    PlayRunGameSound();
     TileMap::Get()->Update(deltaTime);
     PickupManager::Get()->Update(deltaTime);
     EnemyManager::Get()->Update(deltaTime);
@@ -128,6 +145,8 @@ void GameController::UpdateRunGame(float deltaTime)
 
     if (mPlayer.IsDead()) 
     {
+        mRunGamePlaying = false;
+        PlayRunGameSound();
         ChangeState(State::End);
     }
 }
@@ -169,4 +188,28 @@ void GameController::RenderEndScreen()
 State GameController::GetCurrentState() const
 {
     return mCurrentState;
+}
+
+void GameController::PlayTitleSound()
+{
+    if (mStartPlaying)
+    {
+        X::PlaySoundLoop(mTitleSound);
+    }
+    else
+    {
+        X::StopSoundLoop(mTitleSound);
+    }
+}
+
+void GameController::PlayRunGameSound()
+{
+    if (mRunGamePlaying)
+    {
+        X::PlaySoundLoop(mRunGameSound);
+    }
+    else
+    {
+        X::StopSoundLoop(mRunGameSound);
+    }
 }

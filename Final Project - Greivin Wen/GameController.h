@@ -23,9 +23,15 @@ private:
     static GameController* mInstance;
 
     Player mPlayer;
-    BulletPool mBulletPool;  
+    BulletPool mBulletPool;
     State mCurrentState;
     X::TextureId mTitleScreen;
+    X::SoundId mTitleSound;
+    X::SoundId mRunGameSound;
+    X::SoundId mPressSound;
+    X::SoundId mGameOverSound;
+    bool mStartPlaying;
+	bool mRunGamePlaying;
 
     void UpdateStartScreen(float deltaTime);
     void UpdateRunGame(float deltaTime);
@@ -34,4 +40,6 @@ private:
     void RenderStartScreen();
     void RenderRunGame();
     void RenderEndScreen();
+	void PlayTitleSound();
+	void PlayRunGameSound();
 };

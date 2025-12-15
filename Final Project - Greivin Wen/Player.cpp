@@ -34,6 +34,13 @@ Player::Player()
     , mBlinkDuration(1.0f)
     , mBlinkInterval(0.1f)  
     , mIsVisible(true)
+	, mShootSound(0)
+	, mAmmoPickup(0)
+	, mHealthPickup(0)
+	, mHitSound(0)
+	, mWarningSound(0)
+	, mStartPlayingWarningSound(false)
+	, mLightningAttack(0)
 {
 }
 
@@ -264,6 +271,13 @@ void Player::Load()
     mIsBlinking = false;
     mBlinkTimer = 0.0f;
     mIsVisible = true;
+
+	mShootSound = X::LoadSound("gunShot.wav");
+	mAmmoPickup = X::LoadSound("AmmoPickup.wav");
+	mHealthPickup = X::LoadSound("HealthPickup.wav");
+	mHitSound = X::LoadSound("HitSound.wav");
+	mWarningSound = X::LoadSound("WarningSound.wav");
+    mLightningAttack = X::LoadSound("LightningAttack.wav");
 }
 
 void Player::UpdateAnimation(bool isMoving, bool isShooting)
@@ -456,6 +470,7 @@ void Player::Update(float deltaTime)
             mShootCooldown = 0.2f;
             mCurrentAmmo--;
             isShooting = true;
+            X::PlaySoundOneShot(mShootSound);
         }
     }
 
@@ -487,8 +502,15 @@ void Player::Update(float deltaTime)
             mIdleTimer += deltaTime;
             mIsIdle = true;
 
+            if (mIdleTimer > (mMaxIdleTime * 0.5f) && !mStartPlayingWarningSound)
+            {
+                mStartPlayingWarningSound = true;
+                X::PlaySoundLoop(mWarningSound);
+            }
+
             if (mIdleTimer >= mMaxIdleTime && mThunderCooldown <= 0.0f)  // Check cooldown
             {
+				X::PlaySoundOneShot(mLightningAttack);
                 // Thunder strike
                 mHealth -= 1;
                 mDamageCooldown = 1.0f;
@@ -498,6 +520,8 @@ void Player::Update(float deltaTime)
 				mShowLightning = true;
 				mLightningAnimation->Reset();
 				TriggerDamageEffect();
+                X::StopSoundLoop(mWarningSound);
+                mStartPlayingWarningSound = false;
             }
         }
         else
@@ -505,6 +529,11 @@ void Player::Update(float deltaTime)
             // Player is moving, reset timer
             mIdleTimer = 0.0f;
             mIsIdle = false;
+            if (mStartPlayingWarningSound)
+            {
+                X::StopSoundLoop(mWarningSound);
+                mStartPlayingWarningSound = false;
+            }
         }
 
         mLastPosition = mPosition;
@@ -569,7 +598,8 @@ void Player::Render()
 
         X::DrawScreenText(ammoBuffer, ammoX, ammoY, fontSize, X::Colors::White);
 
-        if (mIsIdle && mIdleTimer > (mMaxIdleTime * 0.5f)) {
+        if (mIsIdle && mIdleTimer > (mMaxIdleTime * 0.5f))
+        {
             char warningBuffer[128];
             float timeLeft = mMaxIdleTime - mIdleTimer;
             sprintf_s(warningBuffer, "MOVE! Thunder in %.1f seconds!", timeLeft);
@@ -585,6 +615,7 @@ void Player::Render()
                 X::DrawScreenText(warningBuffer, warningX + 2.0f, warningY + 2.0f, fontSize, X::Colors::Black);
                 X::DrawScreenText(warningBuffer, warningX, warningY, fontSize, X::Colors::Red);
             }
+            
         }
     }
     else
@@ -613,6 +644,7 @@ void Player::OnCollision(Collidable* collidable)
     {
         if (mDamageCooldown <= 0.0f) 
         {
+            X::PlaySoundOneShot(mHitSound);
             mHealth -= 1;
             mDamageCooldown = 1.0f;  
 			TriggerDamageEffect();
@@ -626,10 +658,12 @@ void Player::OnCollision(Collidable* collidable)
         {
             if (pickup->GetPickupType() == PickupType::Ammo)
             {
+				X::PlaySoundOneShot(mAmmoPickup);
                 AddAmmo(5);
             }
             else if (pickup->GetPickupType() == PickupType::Health)
             {
+                X::PlaySoundOneShot(mHealthPickup);
                 AddHealth(1);
             }
         }
@@ -673,4 +707,16 @@ void Player::AddHealth(int amount)
 {
     mHealth += amount;
     mHealth = X::Math::Clamp(mHealth, 0, mMaxHealth);
+}
+
+void Player::PlayWarningSound()
+{
+    if (mStartPlayingWarningSound)
+    {
+		X::PlaySoundLoop(mWarningSound);
+    }
+    else
+    {
+		X::StopSoundLoop(mWarningSound);
+    }
 }

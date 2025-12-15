@@ -29,10 +29,19 @@ public:
     bool IsDead() const;
     void Reset();
 
+	void PlayWarningSound();    
+
 private:
     X::TextureId mImageID;
+	X::SoundId mShootSound;
+	X::SoundId mAmmoPickup;
+	X::SoundId mHealthPickup;
+	X::SoundId mHitSound;
+	X::SoundId mWarningSound;
+	X::SoundId mLightningAttack;
     X::Math::Vector2 mPosition;
     X::Math::Rect mPlayerRect;
+	bool mStartPlayingWarningSound;  
 
     int mHealth;
 	int mMaxHealth;
