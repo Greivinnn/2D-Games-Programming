@@ -544,9 +544,9 @@ void Player::RenderHealth() const
 {
     const int maxHearts = 3;
     const float heartSize = 32.0f;
-    const float heartSpacing = 40.0f; 
-    const float startX = 20.0f;       
-    const float startY = 20.0f;       
+    const float heartSpacing = 40.0f;
+    const float startX = 20.0f;
+    const float startY = 20.0f;
 
     for (int i = 0; i < maxHearts; ++i)
     {
