@@ -148,6 +148,7 @@ void X::Start(const char* configFileName)
 	wcex.hInstance = instance;
 	wcex.hIcon = LoadIconA(nullptr, IDI_APPLICATION);
 	wcex.hCursor = LoadCursorA(nullptr, IDC_ARROW);
+	//wcex.hCursor = LoadCursorFromFileA("../Assets/Images/crosshair.cur");
 	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = appName;

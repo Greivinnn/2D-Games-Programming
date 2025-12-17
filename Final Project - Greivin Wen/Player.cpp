@@ -381,11 +381,14 @@ void Player::Update(float deltaTime)
         int toggleCount = (int)(mBlinkTimer / mBlinkInterval);
         mIsVisible = (toggleCount % 2 == 0);
 
+        SetCollisionFilter(0);
+
         if (mBlinkTimer >= mBlinkDuration)
         {
             mIsBlinking = false;
             mIsVisible = true;
             mBlinkTimer = 0.0f;
+            SetCollisionFilter(ET_ENEMY | ET_PICKUP);
         }
     }
 

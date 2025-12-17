@@ -55,10 +55,10 @@ void PickupManager::Update(float deltaTime)
         if (activePickups < mMaxActivePickups)
         {
             // Randomly choose between Ammo (70% chance) and Health (30% chance)
-            PickupType typeToSpawn = (X::RandomFloat(0.0f, 1.0f) < 0.7f) ? PickupType::Ammo : PickupType::Health;
+            PickupType typeToSpawn = (X::RandomFloat(0.0f, 1.0f) < 0.9f) ? PickupType::Ammo : PickupType::Health;
             SpawnPickup(1, typeToSpawn);
 
-            mSpawnInterval = X::RandomFloat(3.0f, 7.0f);
+            mSpawnInterval = X::RandomFloat(1.0f, 9.0f);
         }
 
         mSpawnTimer = mSpawnInterval;
